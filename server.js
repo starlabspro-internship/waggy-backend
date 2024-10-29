@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const {userRoutes, profileRoutes} = require('./src/routes');
+const {userRoutes, profileRoutes , friendsRoutes , blogRoutes , messagesRoutes} = require('./src/routes');
 
 
 
@@ -11,8 +11,9 @@ app.use(cors());
 
 app.use('/api', userRoutes);
 app.use('/api', profileRoutes);
-
-
+app.use('/api/friends' , friendsRoutes)
+app.use('/api/blogs', blogRoutes);
+app.use('/api/messages', messagesRoutes)
 const port = process.env.PORT
 
 app.listen(port, () => {
