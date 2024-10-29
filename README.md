@@ -1,4 +1,12 @@
+To start Server:
+
+npm install
+npm run dev
+
+
 Installed modules:
+
+
 
 npm install express 
 - JavaScript Backend Server
