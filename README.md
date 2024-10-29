@@ -48,6 +48,3 @@ npx sequelize-cli db:seed:all
 
 PS: This command will create and run seeds
 
-npx sequelize-cli model:generate --name Pets --attributes species:string,name:string,age:integer,description:text,gender:enum:Male,Female,petPicture:string,score:integer,interests:json,breed:string,userId:integer
-
-npx sequelize-cli model:generate --name Pets --attributes species:string,name:string,age:integer,description:text,gender:string,petPicture:string,score:integer,interests:json,breed:string,userId:integer
