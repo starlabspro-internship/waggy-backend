@@ -2,14 +2,17 @@ const express = require('express');
 const router = express.Router();
 const matchController = require('../controllers/matchController');
 
-router.get('/matches', matchController.getAllMatches);
+router.get('/', matchController.getAllMatches);
 
-router.post('/matches', matchController.createMatch);
+router.post('/', matchController.createMatch);
 
-router.get('/matches/:id', matchController.getMatchById);
+router.get('/:id', matchController.getMatchById);
 
-router.put('/matches/:id', matchController.updateMatch);
+router.put('/:id', matchController.updateMatch);
 
-router.delete('/matches/:id', matchController.deleteMatch);
+router.delete('/:id', matchController.deleteMatch);
 
-module.exports = router;
+const registerRoutes = (app) => {
+    app.use('/api', router); 
+  };
+module.exports = registerRoutes;

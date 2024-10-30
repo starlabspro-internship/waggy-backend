@@ -1,4 +1,7 @@
-// Importing the route modules
+
+const express = require('express');
+
+
 const userRoutes = require("./userRoutes");
 const profileRoutes = require("./profileRoutes");
 const friendsRoutes = require("./friendsRoutes");
@@ -8,7 +11,6 @@ const petsRoutes = require('./petsRoutes'); // Add your pets routes
 const ratingsRoutes = require('./ratingsRoutes'); // Add your ratings routes
 const matchesRoutes = require('./matchesRoutes'); // Add your matches routes
 
-// Exporting all routes as an object
 module.exports = {
   userRoutes,
   profileRoutes,

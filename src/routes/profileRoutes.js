@@ -2,15 +2,27 @@ const express = require("express");
 const router = express.Router();
 const profileController = require("../controllers/profileController");
 
-// create a profile router
-router.post("/profile", profileController.createProfile);
-// get all profiles router
-router.get("/profile", profileController.getAllProfiles);
-// get one user by ID router
-router.get("/profile/:id", profileController.getProfileById);
-// update one profile by ID router
-router.put("/profile/:id", profileController.updateProfile);
-// delete one profile by ID router
-router.delete("/profile/:id", profileController.deleteProfile);
+const {
+    createProfile,
+    getAllProfiles,
+    getProfileById,
+    updateProfile,
+    deleteProfile,
+} = profileController;
 
-module.exports = router;
+
+
+router.post('/', createProfile); // Create a new profile
+router.get('/', getAllProfiles); // Get all profiles
+router.get('/:id', getProfileById); // Get a profile by ID
+router.put('/:id', updateProfile); // Update a profile by ID
+router.delete('/:id', deleteProfile);
+
+
+const registerRoutes = (app) => {
+    app.use('/api/profiles', router); // Register the routes with the base path
+  };
+
+
+
+module.exports = registerRoutes;
