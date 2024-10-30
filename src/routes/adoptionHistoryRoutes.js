@@ -1,24 +1,22 @@
 const express = require('express');
-const AdoptionHistoryController = require('../controllers/adoptionHistoryController');
+const {
+  createAdoptionHistory,
+  getAdoptionHistories,
+  getAdoptionHistoryById,
+  updateAdoptionHistory,
+  deleteAdoptionHistory,
+} = require('../controllers/adoptionHistoryController');
 
 const router = express.Router();
 
-router.post(
-  '/adoption-history',
-  AdoptionHistoryController.createAdoptionHistory
-);
-router.get('/adoption-history', AdoptionHistoryController.getAdoptionHistories);
-router.get(
-  '/adoption-history/:id',
-  AdoptionHistoryController.getAdoptionHistoryById
-);
-router.put(
-  '/adoption-history/:id',
-  AdoptionHistoryController.updateAdoptionHistory
-);
-router.delete(
-  '/adoption-history/:id',
-  AdoptionHistoryController.deleteAdoptionHistory
-);
+router.post('/', createAdoptionHistory);
+router.get('/', getAdoptionHistories);
+router.get('/:id', getAdoptionHistoryById);
+router.put('/:id', updateAdoptionHistory);
+router.delete('/:id', deleteAdoptionHistory);
 
-module.exports = router;
+const registerRoutes = (app) => {
+  app.use('/api/adoption-history', router);
+};
+
+module.exports = registerRoutes;

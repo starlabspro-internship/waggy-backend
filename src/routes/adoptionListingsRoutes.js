@@ -1,24 +1,22 @@
 const express = require('express');
+const {
+  createAdoptionListing,
+  getAdoptionListings,
+  getAdoptionListingById,
+  updateAdoptionListing,
+  deleteAdoptionListing,
+} = require('../controllers/adoptionListingController');
+
 const router = express.Router();
-const adoptionListingController = require('../controllers/adoptionListingController');
 
-// Routes for Adoption Listings
-router.post(
-  '/adoption-listings',
-  adoptionListingController.createAdoptionListing
-);
-router.get('/adoption-listings', adoptionListingController.getAdoptionListings);
-router.get(
-  '/adoption-listings/:id',
-  adoptionListingController.getAdoptionListingById
-);
-router.put(
-  '/adoption-listings/:id',
-  adoptionListingController.updateAdoptionListing
-);
-router.delete(
-  '/adoption-listings/:id',
-  adoptionListingController.deleteAdoptionListing
-);
+router.post('/adoption-listings', createAdoptionListing); 
+router.get('/adoption-listings', getAdoptionListings); 
+router.get('/adoption-listings/:id', getAdoptionListingById); 
+router.put('/adoption-listings/:id', updateAdoptionListing); 
+router.delete('/adoption-listings/:id', deleteAdoptionListing); 
 
-module.exports = router;
+const registerRoutes = (app) => {
+    app.use('/api', router); 
+};
+
+module.exports = registerRoutes;
