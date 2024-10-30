@@ -1,24 +1,32 @@
 const express = require('express');
+const {
+  createAdoptionRequest,
+  getAdoptionRequests,
+  getAdoptionRequestById,
+  updateAdoptionRequest,
+  deleteAdoptionRequest,
+} = require('../controllers/adoptionRequestController');
+
 const router = express.Router();
-const adoptionRequestController = require('../controllers/adoptionRequestController');
+
 
 // Routes for Adoption Requests
 router.post(
   '/',
-  adoptionRequestController.createAdoptionRequest
+  createAdoptionRequest
 );
-router.get('/', adoptionRequestController.getAdoptionRequests);
+router.get('/', getAdoptionRequests);
 router.get(
   '/:id',
-  adoptionRequestController.getAdoptionRequestById
+  getAdoptionRequestById
 );
 router.put(
   '/:id',
-  adoptionRequestController.updateAdoptionRequest
+  updateAdoptionRequest
 );
 router.delete(
   '/:id',
-  adoptionRequestController.deleteAdoptionRequest
+  deleteAdoptionRequest
 );
 const registerRoutes = (app) => {
   app.use('/api/adoption-requests', router); 
