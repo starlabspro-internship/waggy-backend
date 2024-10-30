@@ -12,42 +12,45 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  Blog.init({
-    blogId: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    articleImage: {
-      type: DataTypes.STRING,
-      allowNull: true, // Assuming the image is optional
-    },
-    dateCreated: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW, // Set default to current date
-    },
-    userID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Users', // Name of the referenced table
-        key: 'id',      // Key in the referenced table
+  Blog.init(
+    {
+      blogId: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      articleImage: {
+        type: DataTypes.STRING,
+        allowNull: true, // Assuming the image is optional
+      },
+      dateCreated: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW, // Set default to current date
+      },
+      userID: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users', // Name of the referenced table
+          key: 'id', // Key in the referenced table
+        },
       },
     },
-  }, {
-    sequelize,
-    modelName: 'Blog',
-    timestamps: true ,
-  });
+    {
+      sequelize,
+      modelName: 'Blog',
+      timestamps: true,
+    }
+  );
 
   return Blog;
 };
