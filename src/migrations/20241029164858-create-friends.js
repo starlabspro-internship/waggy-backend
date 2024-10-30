@@ -10,7 +10,7 @@ module.exports = {
         primaryKey: true,
       },
       senderUserID: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'Users', 
@@ -20,7 +20,7 @@ module.exports = {
         onUpdate: 'CASCADE', // Optional: Cascade update
       },
       receiverUserID: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'Users',

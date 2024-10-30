@@ -17,4 +17,8 @@ router.delete('/:id', friendsController.deleteFriendship);
 // Route to get specific friendship details
 router.get('/:id', friendsController.getFriendshipDetails);
 
-module.exports = router;
+const registerRoutes = (app) => {
+  app.use('/api/friends', router); 
+};
+
+module.exports = registerRoutes;

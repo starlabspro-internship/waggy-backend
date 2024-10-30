@@ -17,6 +17,6 @@ router.put('/:id', updateUser);
 router.delete('/:id', deleteUser); 
 
 const registerRoutes = (app) => {
-    app.use('/api', router); 
+    app.use('/api/users', router); 
   };
 module.exports = registerRoutes;

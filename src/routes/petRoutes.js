@@ -13,6 +13,6 @@ router.put('/:id', petController.updatePet);
 router.delete('/:id', petController.deletePet);
 
 const registerRoutes = (app) => {
-    app.use('/api', router); 
+    app.use('/api/pets', router); 
   };
 module.exports = registerRoutes;

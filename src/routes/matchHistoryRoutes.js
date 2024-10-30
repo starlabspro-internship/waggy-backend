@@ -3,13 +3,16 @@ const router = express.Router();
 const matchHistoryController = require('../controllers/matchHistoryController');
 
 // Routes for Match History
-router.post('/match-histories', matchHistoryController.createMatchHistory);
-router.get('/match-histories', matchHistoryController.getMatchHistories);
-router.get('/match-histories/:id', matchHistoryController.getMatchHistoryById);
-router.put('/match-histories/:id', matchHistoryController.updateMatchHistory);
+router.post('/', matchHistoryController.createMatchHistory);
+router.get('/', matchHistoryController.getMatchHistories);
+router.get('/:id', matchHistoryController.getMatchHistoryById);
+router.put('/:id', matchHistoryController.updateMatchHistory);
 router.delete(
-  '/match-histories/:id',
+  '/:id',
   matchHistoryController.deleteMatchHistory
 );
+const registerRoutes = (app) => {
+  app.use('/api/match-history', router);
+};
 
-module.exports = router;
+module.exports = registerRoutes;

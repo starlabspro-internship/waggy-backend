@@ -4,21 +4,24 @@ const adoptionRequestController = require('../controllers/adoptionRequestControl
 
 // Routes for Adoption Requests
 router.post(
-  '/adoption-requests',
+  '/',
   adoptionRequestController.createAdoptionRequest
 );
-router.get('/adoption-requests', adoptionRequestController.getAdoptionRequests);
+router.get('/', adoptionRequestController.getAdoptionRequests);
 router.get(
-  '/adoption-requests/:id',
+  '/:id',
   adoptionRequestController.getAdoptionRequestById
 );
 router.put(
-  '/adoption-requests/:id',
+  '/:id',
   adoptionRequestController.updateAdoptionRequest
 );
 router.delete(
-  '/adoption-requests/:id',
+  '/:id',
   adoptionRequestController.deleteAdoptionRequest
 );
+const registerRoutes = (app) => {
+  app.use('/api/adoption-requests', router); 
+};
 
-module.exports = router;
+module.exports = registerRoutes;

@@ -13,6 +13,6 @@ router.put('/:id', matchController.updateMatch);
 router.delete('/:id', matchController.deleteMatch);
 
 const registerRoutes = (app) => {
-    app.use('/api', router); 
+    app.use('/api/matches', router); 
   };
 module.exports = registerRoutes;

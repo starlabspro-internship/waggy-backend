@@ -13,6 +13,7 @@ router.put('/:id', ratingController.updateRating);
 router.delete('/:id', ratingController.deleteRating);
 
 const registerRoutes = (app) => {
-    app.use('/api', router); 
+    app.use('/api/ratings', router); 
   };
+  
 module.exports = registerRoutes;

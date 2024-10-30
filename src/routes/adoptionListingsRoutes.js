@@ -1,24 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const adoptionListingController = require('../controllers/adoptionListingController');
+const adoptionListingController = require('../controllers/adoptionListingsController');
 
 // Routes for Adoption Listings
 router.post(
-  '/adoption-listings',
+  '/',
   adoptionListingController.createAdoptionListing
 );
-router.get('/adoption-listings', adoptionListingController.getAdoptionListings);
+router.get('/', adoptionListingController.getAdoptionListings);
 router.get(
-  '/adoption-listings/:id',
+  '/:id',
   adoptionListingController.getAdoptionListingById
 );
 router.put(
-  '/adoption-listings/:id',
+  '/:id',
   adoptionListingController.updateAdoptionListing
 );
 router.delete(
-  '/adoption-listings/:id',
+  '/:id',
   adoptionListingController.deleteAdoptionListing
 );
-
-module.exports = router;
+const registerRoutes = (app) => {
+  app.use('/api/adoption-listing', router); 
+}; 
+module.exports = registerRoutes;

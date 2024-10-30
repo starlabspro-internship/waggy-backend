@@ -6,6 +6,6 @@ router.post('/', messagesController.sendMessage);
 router.get('/:chatRoomId', messagesController.getMessages);
 
 const registerRoutes = (app) => {
-    app.use('/api', router); 
+    app.use('/api/messages', router); 
   };
 module.exports = registerRoutes;

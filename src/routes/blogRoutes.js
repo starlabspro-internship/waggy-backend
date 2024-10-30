@@ -7,6 +7,6 @@ router.post('/', blogController.createBlog);
 router.get('/', blogController.getBlogs);
 
 const registerRoutes = (app) => {
-    app.use('/api', router); 
+    app.use('/api/blogs', router); 
   };
 module.exports = registerRoutes;
