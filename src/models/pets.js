@@ -45,10 +45,10 @@ module.exports = (sequelize, DataTypes) => {
       as: 'owner',         
     });
 
-    Pet.hasMany(models.AdoptionListing, {
-      foreignKey: 'petId',
-      as: 'adoptionListings', 
-    });
+   // Pet.hasMany(models.AdoptionListing, {
+   //   foreignKey: 'petId',
+   //   as: 'adoptionListings', 
+   // });
 
     Pet.hasMany(models.Rating, {
       foreignKey: 'petId',
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Pet.belongsToMany(models.Pet, {
-      through: models.Matches, 
+      through: models.Match, 
       as: 'matchedPets',      
       foreignKey: 'pet1Id',   
       otherKey: 'pet2Id',     
