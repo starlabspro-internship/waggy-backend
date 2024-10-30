@@ -12,6 +12,7 @@ const createUser = async (req, res) => {
 // Get all users
 
 const getAllUsers = async (req, res) => {
+  console.log("ka request ne get all")
   try {
     const users = await User.findAll({
       include: { model: Profile, as: "profile" },
@@ -23,6 +24,7 @@ const getAllUsers = async (req, res) => {
 };
 // Get a single user by ID / inlcuding profile
 const getUserById = async (req, res) => {
+  console.log("ka request")
   try {
     const user = await User.findByPk(req.params.id, {
       include: { model: Profile, as: "profile" },
