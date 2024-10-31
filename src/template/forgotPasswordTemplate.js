@@ -71,7 +71,11 @@ const generateForgotPasswordEmail = (resetLink) => {
             color: #4a90e2;
             text-decoration: none;
         }
-
+            .header .header-image {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
         @media (max-width: 600px) {
             .container {
                 width: 90%;
@@ -93,9 +97,10 @@ const generateForgotPasswordEmail = (resetLink) => {
 <body>
     <div class="container">
         <div class="email-body">
-            <div class="header">
-                <h1>Reset Your Password</h1>
-            </div>
+           <div class="header">
+                    <img class="header-image" src="https://storage.googleapis.com/menu-view-storage/waggy/Waggy.png" alt="Wagy Logo" />
+                    <h1>Reset Your Password</h1>
+          </div>
             <div class="content">
                 <div class="welcome-message">We received a request to reset your password.</div>
                 
