@@ -14,6 +14,7 @@ const adoptionHistoryRoutes = require('./adoptionHistoryRoutes')
 const adoptionListingRoutes = require('./adoptionListingsRoutes')
 const adoptionRequestRoutes = require('./adoptionRequestRoutes')
 const matchHistoryRoutes = require('./matchHistoryRoutes')
+const passwordRoutes = require('./passwordRoutes')
 
 module.exports = {
   userRoutes,
@@ -27,5 +28,6 @@ module.exports = {
   adoptionHistoryRoutes,
   adoptionListingRoutes,
   adoptionRequestRoutes,
-  matchHistoryRoutes
+  matchHistoryRoutes,
+  passwordRoutes
 };

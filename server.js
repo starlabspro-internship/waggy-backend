@@ -1,20 +1,10 @@
-require('dotenv').config(); // Load environment variables from .env file
+//require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
+
 const cors = require('cors');
 
 
-// const registerUserRoutes = require('./src/routes/userRoutes');
-// const registerProfileRoutes = require('./src/routes/profileRoutes');
-// const registerRatingRoutes = require('./src/routes/ratingRoutes');
-// const registerPetRoutes = require('./src/routes/petRoutes');
-// const registerMessagesRoutes = require('./src/routes/messagesRoutes');
-// const registerMatchRoutes = require('./src/routes/matchRoutes');
-// const registerFriendsRoutes = require('./src/routes/friendsRoutes');
-// const registerBlogRoutes = require('./src/routes/blogRoutes');
-// const adoptionHistoryRoutes = require('./src/routes/adoptionHistoryRoutes')
-// const adoptionListingsRoutes = require('./src/routes/adoptionListingsRoutes')
-// const adoptionRequestRoutes = require('./src/routes/adoptionRequestRoutes')
-// const matchHistoryRoutes = require('./src/routes/matchHistoryRoutes')
+
 
 const { 
   userRoutes, 
@@ -28,7 +18,8 @@ const {
   adoptionHistoryRoutes, 
   adoptionListingRoutes, 
   adoptionRequestRoutes, 
-  matchHistoryRoutes 
+  matchHistoryRoutes , 
+  passwordRoutes
 } = require('./src/routes/index');
 
 
@@ -50,9 +41,14 @@ adoptionHistoryRoutes(app)
 adoptionListingRoutes(app)
 adoptionRequestRoutes(app)
 matchHistoryRoutes(app)
+passwordRoutes(app)
 
 const port = process.env.PORT || 3000; 
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the Waggy API');
 });

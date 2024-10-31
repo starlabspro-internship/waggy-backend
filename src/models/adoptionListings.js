@@ -39,10 +39,6 @@ module.exports = (sequelize, DataTypes) => {
       adoptionStatus: {
         type: DataTypes.STRING,
         allowNull: false,
-        references: {
-          model: 'AdoptionRequest',
-          key: 'id',
-        },
       },
       listedAt: {
         type: DataTypes.DATE,
