@@ -10,11 +10,11 @@ const {
 
 const router = express.Router();
 
-router.post('/', createUser); 
-router.get('/', getAllUsers); 
-router.get('/:id', getUserById); 
-router.put('/:id', updateUser); 
-router.delete('/:id', deleteUser); 
+router.post('/signup', createUser); 
+router.get('/list', getAllUsers); 
+router.get('/view/:id', getUserById); 
+router.put('/update/:id', updateUser); 
+router.delete('/remove/:id', deleteUser); 
 
 const registerRoutes = (app) => {
     app.use('/api/users', router); 

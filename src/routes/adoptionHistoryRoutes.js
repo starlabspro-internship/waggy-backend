@@ -10,20 +10,20 @@ const {
 const router = express.Router();
 
 router.post(
-  '/',
+  '/new',
   createAdoptionHistory
 );
-router.get('/', getAdoptionHistories);
+router.get('/list', getAdoptionHistories);
 router.get(
-  '/:id',
+  '/view/:id',
   getAdoptionHistoryById
 );
 router.put(
-  '/:id',
+  '/edit/:id',
   updateAdoptionHistory
 );
 router.delete(
-  '/:id',
+  '/remove/:id',
   deleteAdoptionHistory
 );
 const registerRoutes = (app) => {

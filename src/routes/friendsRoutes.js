@@ -3,7 +3,7 @@ const router = express.Router();
 const friendsController = require('../controllers/friendsController');
 
 // Route to add a friend request
-router.post('/', friendsController.addFriend);
+router.post('/request', friendsController.addFriend);
 
 // Route to get accepted friends
 router.get('/accepted/:userId', friendsController.getAcceptedFriends);
@@ -15,7 +15,7 @@ router.put('/:id/status', friendsController.updateFriendshipStatus);
 router.delete('/:id', friendsController.deleteFriendship);
 
 // Route to get specific friendship details
-router.get('/:id', friendsController.getFriendshipDetails);
+router.get('/details/:id', friendsController.getFriendshipDetails);
 
 const registerRoutes = (app) => {
   app.use('/api/friends', router); 

@@ -12,20 +12,20 @@ const router = express.Router();
 
 // Routes for Adoption Requests
 router.post(
-  '/',
+  '/new',
   createAdoptionRequest
 );
-router.get('/', getAdoptionRequests);
+router.get('/list', getAdoptionRequests);
 router.get(
-  '/:id',
+  '/view/:id',
   getAdoptionRequestById
 );
 router.put(
-  '/:id',
+  '/edit/:id',
   updateAdoptionRequest
 );
 router.delete(
-  '/:id',
+  '/remove/:id',
   deleteAdoptionRequest
 );
 const registerRoutes = (app) => {

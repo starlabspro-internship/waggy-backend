@@ -12,11 +12,11 @@ const {
 
 
 
-router.post('/', createProfile); // Create a new profile
-router.get('/', getAllProfiles); // Get all profiles
-router.get('/:id', getProfileById); // Get a profile by ID
-router.put('/:id', updateProfile); // Update a profile by ID
-router.delete('/:id', deleteProfile);
+router.post('/new', createProfile); // Create a new profile
+router.get('/list', getAllProfiles); // Get all profiles
+router.get('/view/:id', getProfileById); // Get a profile by ID
+router.put('/edit/:id', updateProfile); // Update a profile by ID
+router.delete('/remove/:id', deleteProfile);
 
 
 const registerRoutes = (app) => {
