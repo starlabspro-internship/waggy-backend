@@ -1,10 +1,14 @@
 const { User, Profile } = require("../models");
-
+const sendEmail = require('../services/emailService');
+const generateWelcomeEmail = require('../template/confirmationEmailTemplate');
 // Create a new user
 const createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
-    res.json(user);3
+    const emailContent = generateWelcomeEmail(user);
+    // send email to the user after creating account
+    sendEmail(user.email, 'Welcome to Waggy!', emailContent);
+    res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -12,7 +16,6 @@ const createUser = async (req, res) => {
 // Get all users
 
 const getAllUsers = async (req, res) => {
-  console.log("ka request ne get all")
   try {
     const users = await User.findAll({
       include: { model: Profile, as: "profile" },
@@ -24,7 +27,6 @@ const getAllUsers = async (req, res) => {
 };
 // Get a single user by ID / inlcuding profile
 const getUserById = async (req, res) => {
-  console.log("ka request")
   try {
     const user = await User.findByPk(req.params.id, {
       include: { model: Profile, as: "profile" },
