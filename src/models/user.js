@@ -55,6 +55,10 @@ module.exports = (sequelize) => {
       type: DataTypes.DATE,
       allowNull: true,
     },
+    refreshToken: { 
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'User',

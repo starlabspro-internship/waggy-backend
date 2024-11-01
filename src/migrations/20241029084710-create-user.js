@@ -21,6 +21,10 @@ module.exports = {
       resetPasswordExpires: {
         type: Sequelize.DATE
       },
+      refreshToken: {  // Add refreshToken here
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

@@ -8,8 +8,8 @@ router.post('/register', authController.registerUser);
 
 // User Login
 router.post('/login', authController.loginUser);
+router.post('/token', authController.refreshToken); 
 
-// Refresh Token
+// Protected Refresh Token Route
 router.get('/refreshToken', authMiddleware, authController.refreshToken);
-
 module.exports = router;
