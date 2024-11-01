@@ -4,10 +4,8 @@ const cors = require('cors');
 const protectedRoutes = require('./src/routes/protected');
 const authRoutes = require('./src/routes/auth');
 const authenticate = require('./src/middleware/auth'); // Import the middleware here
-
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -15,7 +13,9 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 
 // Protected Routes
-app.use('/api/protected', authenticate, protectedRoutes);
+app.get('/api/protected', authenticate, (req, res) => {
+  res.status(200).json({ message: 'Protected route accessed' });
+});
 
 // Other routes (if they are defined correctly in your index file)
 const {
