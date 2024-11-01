@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Pets', // This references the 'Pets' table
+          model: 'Pets',
           key: 'id',
         },
       },
@@ -20,17 +20,13 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users', // This references the 'Users' table
+          model: 'Users',
           key: 'id',
         },
       },
       adoptionStatus: {
         type: Sequelize.STRING,
         allowNull: false,
-        references: {
-          model: 'AdoptionRequests', // This references the 'AdoptionRequests' table
-          key: 'id',
-        },
       },
       listedAt: {
         type: Sequelize.DATE,
@@ -45,9 +41,7 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal(
-          'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
-        ),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },
     });
   },

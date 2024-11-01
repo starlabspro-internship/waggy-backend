@@ -1,52 +1,56 @@
 'use strict';
 
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Pets', {
       id: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-      },
-      species: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER
       },
       name: {
         type: Sequelize.STRING,
+        allowNull: false
       },
-      age: {
-        type: Sequelize.INTEGER,
-      },
-      description: {
-        type: Sequelize.TEXT,
-      },
-      gender: {
-        type: Sequelize.ENUM('Male', 'Female', 'Other'),
-      },
-      petPicture: {
+      species: {
         type: Sequelize.STRING,
-      },
-      score: {
-        type: Sequelize.INTEGER,
-      },
-      interests: {
-        type: Sequelize.STRING,
+        allowNull: false
       },
       breed: {
         type: Sequelize.STRING,
+        allowNull: false
+      },
+      age: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      description: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      userID: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id'
+        }
       },
       createdAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
-        type: Sequelize.DATE,
         allowNull: false,
-      },
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+      }
     });
   },
 
-  async down(queryInterface) {
+  down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Pets');
-  },
+  }
 };

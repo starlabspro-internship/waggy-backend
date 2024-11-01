@@ -1,0 +1,12 @@
+{
+    "development": {
+      "username": "root",
+      "password": "root",
+      "database": "root",
+      "host": "localhost",
+      "dialect": "mysql",
+      "alter": true,
+      "sync": { "force": false },
+      "logging": false
+    }
+  }

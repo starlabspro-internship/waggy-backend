@@ -1,7 +1,3 @@
-
-const express = require('express');
-
-
 const userRoutes = require("./userRoutes");
 const profileRoutes = require("./profileRoutes");
 const friendsRoutes = require("./friendsRoutes");
@@ -15,6 +11,9 @@ const adoptionListingRoutes = require('./adoptionListingsRoutes')
 const adoptionRequestRoutes = require('./adoptionRequestRoutes')
 const matchHistoryRoutes = require('./matchHistoryRoutes')
 const passwordRoutes = require('./passwordRoutes')
+const auth = require('./auth') // register,login, token, refresh token routes
+
+
 
 module.exports = {
   userRoutes,
@@ -29,5 +28,6 @@ module.exports = {
   adoptionListingRoutes,
   adoptionRequestRoutes,
   matchHistoryRoutes,
-  passwordRoutes
+  passwordRoutes,
+  auth
 };

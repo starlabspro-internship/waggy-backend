@@ -2,6 +2,9 @@ const db = require('../models');
 const User = db.User;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+// To send the confirmation email
+const sendEmail = require('../services/emailService');
+const generateWelcomeEmail = require('../template/confirmationEmailTemplate');
 
 // Registration function
 exports.registerUser = async (req, res) => {
@@ -20,10 +23,18 @@ exports.registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
+    // Send email to the user after creating account
+    if(newUser){
+      const emailContent = generateWelcomeEmail(newUser);
+      sendEmail(newUser.email, 'Welcome to Waggy!', emailContent);
+    }
+    
     res.status(201).json({
       message: 'User registered successfully',
       userId: newUser.id,
     });
+
+
   } catch (error) {
     console.error(error); // Log the error for debugging
     res.status(500).json({ error: 'Internal Server Error' });

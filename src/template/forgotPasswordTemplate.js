@@ -1,4 +1,5 @@
 const generateForgotPasswordEmail = (resetLink) => {
+    console.log(resetLink)
   return `
 <!DOCTYPE html>
 <html>
@@ -76,6 +77,9 @@ const generateForgotPasswordEmail = (resetLink) => {
             height: 100px;
             margin-bottom: 10px;
         }
+            .white-text {
+            color: #ffffff;
+            }
         @media (max-width: 600px) {
             .container {
                 width: 90%;
@@ -111,7 +115,7 @@ const generateForgotPasswordEmail = (resetLink) => {
                 <table width="100%">
                     <tr>
                         <td align="center">
-                            <a href="${resetLink}" class="cta-button">Reset Password</a>
+                            <a href="${resetLink}" class="cta-button"> <span class="white-text">Reset Password</span> </a>
                         </td>
                     </tr>
                 </table>

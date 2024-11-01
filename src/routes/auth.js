@@ -4,7 +4,6 @@ const authController = require('../controllers/authController');
 const authMiddleware = require('../middleware/auth');
 
 // User Registration
-// In src/routes/auth.js
 router.post('/register', (req, res, next) => {
     console.log('Register endpoint hit with data:', req.body); // Log request data
     next();
@@ -13,7 +12,10 @@ router.post('/register', (req, res, next) => {
 // User Login
 router.post('/login', authController.loginUser);
 router.post('/token', authController.refreshToken); 
-
-// Protected Refresh Token Route
 router.get('/refreshToken', authMiddleware, authController.refreshToken);
-module.exports = router;
+
+const auth = (app) => {
+  app.use('/auth', router); 
+};
+// Protected Refresh Token Route
+module.exports = auth;

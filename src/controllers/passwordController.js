@@ -3,6 +3,10 @@ const sendEmail = require('../services/emailService');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt'); // Hashing library
 const { Op } = require('sequelize');
+const generatePasswordResetEmail = require('../template/passwordResetedTemplate');
+const generateForgotPasswordEmail = require('../template/forgotPasswordTemplate');
+
+
 
 const passwordController = {
   // Forgot Password Handler
@@ -24,9 +28,7 @@ const passwordController = {
       await user.save();
 
       const resetUrl = `http://localhost:3000/api/password/reset/${token}`;
-      const emailContent = `To reset your password, click the following link: ${resetUrl}`;
-      await sendEmail(user.email, 'Password Reset', emailContent);
-
+      await sendEmail(user.email, 'Password Reset', generateForgotPasswordEmail(resetUrl));
       res.status(200).json({
         message: "If this email is registered, you will receive a password reset link shortly."
       });
@@ -66,6 +68,9 @@ const passwordController = {
       user.resetPasswordExpires = null;
 
       await user.save();
+      /// send email to user after successful email reset
+      const emailContent = generatePasswordResetEmail(user);
+      sendEmail(user.email, 'Password Reset Confirmation!', emailContent);
 
       res.status(200).json({
         message: "Your password has been successfully reset."

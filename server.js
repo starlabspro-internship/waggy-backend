@@ -1,16 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const protectedRoutes = require('./src/routes/protected');
-const authRoutes = require('./src/routes/auth');
 const authenticate = require('./src/middleware/auth'); // Import the middleware here
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-// Authentication Routes
-app.use('/auth', authRoutes);
 
 // Protected Routes
 app.get('/api/protected', authenticate, (req, res) => {
@@ -21,6 +16,7 @@ app.get('/api/protected', authenticate, (req, res) => {
 const {
   userRoutes,
   profileRoutes,
+  passwordRoutes,
   friendsRoutes,
   blogRoutes,
   messagesRoutes,
@@ -31,6 +27,7 @@ const {
   adoptionListingRoutes,
   adoptionRequestRoutes,
   matchHistoryRoutes,
+  auth
 } = require('./src/routes/index');
 
 userRoutes(app);
@@ -45,6 +42,8 @@ adoptionHistoryRoutes(app);
 adoptionListingRoutes(app);
 adoptionRequestRoutes(app);
 matchHistoryRoutes(app);
+auth(app);
+passwordRoutes(app);
 
 const port = process.env.PORT || 3000;
 

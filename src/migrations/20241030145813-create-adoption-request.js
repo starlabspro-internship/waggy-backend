@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users', // This references the 'Users' table
+          model: 'Users',
           key: 'id',
         },
       },
@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'AdoptionListings', // This references the 'AdoptionListings' table
+          model: 'AdoptionListings',
           key: 'id',
         },
       },
@@ -36,11 +36,10 @@ module.exports = {
       requestUserID: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        // You can uncomment this block if you want to reference the Users model again.
-        // references: {
-        //   model: 'Users', // References the Users model for the user making the request
-        //   key: 'id',
-        // },
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,
@@ -50,9 +49,7 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal(
-          'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
-        ),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },
     });
   },
