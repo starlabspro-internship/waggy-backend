@@ -23,18 +23,37 @@ exports.registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
+    // Generate tokens for the newly created user
+    const accessToken = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    // Generate and store the refresh token
+    const refreshToken = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
+      expiresIn: '7d',
+    });
+
+    console.log('About to update refresh token for user ID:', newUser.id);
+    try {
+      await User.update({ refreshToken }, { where: { id: newUser.id } });
+      console.log('Refresh token updated successfully.');
+    } catch (updateError) {
+      console.error('Error updating refresh token:', updateError);
+    }
+
     // Send email to the user after creating account
-    if(newUser){
+    if (newUser) {
       const emailContent = generateWelcomeEmail(newUser);
       sendEmail(newUser.email, 'Welcome to Waggy!', emailContent);
     }
-    
+
+    // Respond with tokens and user information
     res.status(201).json({
       message: 'User registered successfully',
       userId: newUser.id,
+      token: accessToken,
+      refreshToken: refreshToken, // Include refresh token in the response
     });
-
-
   } catch (error) {
     console.error(error); // Log the error for debugging
     res.status(500).json({ error: 'Internal Server Error' });
@@ -56,30 +75,22 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    // Generate new access token
+    const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 
-    // Generate and store the refresh token
-    const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '7d', // Longer expiration for refresh tokens
-    });
+    // Use existing refresh token
+    const refreshToken = user.refreshToken; // Use the refresh token stored in the database
 
-    console.log('About to update refresh token for user ID:', user.id);
-    try {
-      await User.update({ refreshToken }, { where: { id: user.id } });
-      console.log('Refresh token updated successfully.');
-    } catch (updateError) {
-      console.error('Error updating refresh token:', updateError);
-    }
-
-    res.json({ token, refreshToken });
+    res.json({ accessToken, refreshToken }); // Return both tokens
   } catch (error) {
     console.error('Error logging in user:', error);
     res.status(500).json({ error: 'Error logging in user' });
   }
 };
 
+// Refresh token function remains unchanged
 exports.refreshToken = async (req, res) => {
   const { refreshToken } = req.body; // Get refresh token from the request body
 

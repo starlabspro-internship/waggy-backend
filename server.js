@@ -27,7 +27,7 @@ const {
   adoptionListingRoutes,
   adoptionRequestRoutes,
   matchHistoryRoutes,
-  auth
+  auth,
 } = require('./src/routes/index');
 
 userRoutes(app);
@@ -48,5 +48,5 @@ passwordRoutes(app);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server running on port: ${port}!`);
 });
