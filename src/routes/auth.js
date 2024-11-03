@@ -4,18 +4,22 @@ const authController = require('../controllers/authController');
 const authMiddleware = require('../middleware/auth');
 
 // User Registration
-router.post('/register', (req, res, next) => {
-    console.log('Register endpoint hit with data:', req.body); // Log request data
+router.post(
+  '/register',
+  (req, res, next) => {
+    console.log('User Registered!'); // Log request data
     next();
-  }, authController.registerUser);
-  
+  },
+  authController.registerUser
+);
+
 // User Login
 router.post('/login', authController.loginUser);
-router.post('/token', authController.refreshToken); 
+router.post('/token', authController.refreshToken);
 router.get('/refreshToken', authMiddleware, authController.refreshToken);
 
 const auth = (app) => {
-  app.use('/auth', router); 
+  app.use('/auth', router);
 };
 // Protected Refresh Token Route
 module.exports = auth;
