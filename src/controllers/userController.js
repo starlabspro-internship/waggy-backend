@@ -1,21 +1,7 @@
 const { User, Profile } = require("../models");
-const sendEmail = require('../services/emailService');
-const generatePasswordResetEmail = require('../template/passwordResetedTemplate');
-// Create a new user
-const createUser = async (req, res) => {
-  try {
-    const user = await User.create(req.body);
-    // send email to the user after creating account
-    const emailContent = generatePasswordResetEmail(user);
-    sendEmail(user.email, 'Password Reset Confirmation!', emailContent);
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+
+
 // Get all users
-
-
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
@@ -67,7 +53,6 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-  createUser,
   getAllUsers,
   getUserById,
   updateUser,

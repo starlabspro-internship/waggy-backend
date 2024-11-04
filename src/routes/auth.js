@@ -19,7 +19,7 @@ router.post('/token', authController.refreshToken);
 router.get('/refreshToken', authMiddleware, authController.refreshToken);
 
 const auth = (app) => {
-  app.use('/auth', router);
+  app.use('api/auth', router);
 };
 // Protected Refresh Token Route
 module.exports = auth;

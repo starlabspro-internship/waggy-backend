@@ -6,7 +6,7 @@ const seedUsers = async () => {
     const hashedPassword = await bcrypt.hash('testPassword123', 10); // Hash the password
 
     await User.create({
-      email: 'testuser@example.com',
+      email: 'natyra.arifi@hotmail.com',
       password: hashedPassword,
       resetPasswordToken: null,
       resetPasswordExpires: null,

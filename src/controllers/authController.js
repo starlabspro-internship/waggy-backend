@@ -25,7 +25,7 @@ exports.registerUser = async (req, res) => {
 
     // Generate tokens for the newly created user
     const accessToken = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '7h',
     });
 
     // Generate and store the refresh token
@@ -77,7 +77,7 @@ exports.loginUser = async (req, res) => {
 
     // Generate new access token
     const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '7h',
     });
 
     // Use existing refresh token
@@ -105,7 +105,7 @@ exports.refreshToken = async (req, res) => {
 
     // Generate new access token
     const newAccessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '7h',
     });
     res.json({ accessToken: newAccessToken });
   } catch (error) {
