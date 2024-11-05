@@ -16,13 +16,29 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
-      include: { model: Profile, as: "profile" },
+      attributes: { exclude: ["password", "refreshToken"] }, // Exclude sensitive fields
+      include: [
+        {
+          model: Profile,
+          as: "profile",
+          attributes: ["firstName", "lastName", "organisationName"], // Specify profile attributes
+        },
+      ],
     });
-    res.json(user);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" }); // Handle user not found
+    }
+
+    res.json(user); // Respond with user data
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Internal Server Error" }); // Consistent error response
   }
 };
+
+
+
 // Update a user
 const updateUser = async (req, res) => {
   try {

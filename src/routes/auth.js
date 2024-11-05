@@ -7,7 +7,6 @@ const authMiddleware = require('../middleware/auth');
 router.post(
   '/register',
   (req, res, next) => {
-    console.log('User Registered!'); // Log request data
     next();
   },
   authController.registerUser

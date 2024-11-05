@@ -30,6 +30,16 @@ const {
   matchHistoryRoutes,
   auth,
 } = require('./src/routes/index');
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Protected Routes
+app.get('/api/protected', authenticate, (req, res) => {
+  res.status(200).json({ message: 'Protected route accessed' });
+});
+
 
 userRoutes(app);
 profileRoutes(app);
