@@ -25,7 +25,7 @@ const passwordController = {
 
       await user.save();
 
-      const resetUrl = `http://localhost:3000/api/password/reset/${token}`;
+      const resetUrl = `${process.env.WAGGY_FRONTEND_URL}/SetNewPassword.html?token=${token}`;
       await sendEmail(
         user.email,
         'Password Reset',
@@ -69,12 +69,9 @@ const passwordController = {
       // Compare the new password with the old hashed password
       const isSamePassword = await bcrypt.compare(password, user.password);
       if (isSamePassword) {
-        return res
-          .status(400)
-          .json({
-            message:
-              'New password must be different from the previous password.',
-          });
+        return res.status(400).json({
+          message: 'New password must be different from the previous password.',
+        });
       }
 
       // Hash the new password
