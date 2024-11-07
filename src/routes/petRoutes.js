@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const petController = require('../controllers/petController');
-
+const upload = require('../middleware/upload')
 router.get('/list', petController.getAllPets);
 
-router.post('/new', petController.createPet);
+router.post('/new', upload.single('petPicture'), petController.createPet);
 
 router.get('/view/:id', petController.getPetById);
 

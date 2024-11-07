@@ -7,46 +7,62 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       species: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       breed: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       age: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
       },
       description: {
         type: Sequelize.TEXT,
-        allowNull: true
+        allowNull: true,
       },
-      userID: {
+      gender: {
+        type: Sequelize.ENUM('Male', 'Female', 'Other'),
+        allowNull: true,  // You can adjust this if you want gender to be required
+      },
+      petPicture: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      score: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      interests: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      userId: {  // Ensure this matches the model's association name
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'Users',
-          key: 'id'
-        }
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-      }
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+      },
     });
   },
 

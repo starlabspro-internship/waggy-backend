@@ -1,5 +1,5 @@
 const { Pet } = require('../models'); 
-
+const fs = require('fs');
 exports.getAllPets = async (req, res) => {
     try {
         const pets = await Pet.findAll(); 
@@ -12,19 +12,20 @@ exports.getAllPets = async (req, res) => {
 
 exports.createPet = async (req, res) => {
     try {
-        const { species, name, age, description, gender, petPicture, score, interests, breed } = req.body;
+        const { name, gender, species, breed, age, interests, userId } = req.body;
+        const petPicture = req.file ? `/uploads/${req.file.filename}` : null; 
 
         const newPet = await Pet.create({ 
-            species,
             name,
-            age,
-            description,
             gender,
-            petPicture,
-            score,
+            species,
+            breed,
+            age,
             interests,
-            breed
+            petPicture,
+            userId: parseInt(userId),
         });
+        console.log(`Created Pet ${newPet}`);
 
         res.status(201).json(newPet); 
     } catch (error) {
@@ -65,15 +66,16 @@ exports.updatePet = async (req, res) => {
 
 exports.deletePet = async (req, res) => {
     try {
-        const pet = await Pet.findByPk(req.params.id); 
-
-        if (!pet) {
-            return res.status(404).json({ error: 'Pet not found.' });
-        }
-
-        await pet.destroy(); 
-        res.status(204).send(); 
+      const pet = await Pet.findByPk(req.params.id);
+  
+      if (!pet) {
+        return res.status(404).json({ error: 'Pet not found.' });
+      }
+  
+      await pet.destroy(); 
+      res.status(204).send("Pet was deleted successfully"); 
     } catch (error) {
-        res.status(500).json({ error: 'An error occurred while deleting the pet.' });
+      console.error('Error during deletion:', error); // Log the actual error
+      res.status(500).json({ error: 'An error occurred while deleting the pet.' });
     }
-};
+  };
