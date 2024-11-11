@@ -8,7 +8,7 @@ router.post('/new', upload.single('petPicture'), petController.createPet);
 
 router.get('/view/:id', petController.getPetById);
 
-router.put('/edit/:id', petController.updatePet);
+router.put('/edit/:id',upload.single('petPicture'), petController.updatePet);
 
 router.delete('/remove/:id', petController.deletePet);
 

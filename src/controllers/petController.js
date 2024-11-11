@@ -50,18 +50,39 @@ exports.getPetById = async (req, res) => {
 
 exports.updatePet = async (req, res) => {
     try {
-        const pet = await Pet.findByPk(req.params.id); 
-
-        if (!pet) {
-            return res.status(404).json({ error: 'Pet not found.' });
-        }
-
-        const updatedPet = await pet.update(req.body);
-        res.status(200).json(updatedPet); 
+      // Find the pet by ID
+      const pet = await Pet.findByPk(req.params.id);
+  
+      if (!pet) {
+        return res.status(404).json({ error: 'Pet not found.' });
+      }
+  
+      // Prepare data for update
+      const updatedData = {
+        name: req.body.name,
+        gender: req.body.gender,
+        species: req.body.species,
+        breed: req.body.breed,
+        age: req.body.age,
+        interests: req.body.interests,
+      };
+  
+      // If a new picture is uploaded, add it to the updated data
+      if (req.file) {
+        updatedData.petPicture = `/uploads/${req.file.filename}` ; // Save the file path or URL as needed
+      }
+  
+      // Update pet details
+      const updatedPet = await pet.update(updatedData);
+  
+      // Return the updated pet
+      res.status(200).json(updatedPet);
+  
     } catch (error) {
-        res.status(400).json({ error: 'An error occurred while updating the pet.' });
+      console.error(error);
+      res.status(400).json({ error: 'An error occurred while updating the pet.' });
     }
-};
+  };
 
 
 exports.deletePet = async (req, res) => {
