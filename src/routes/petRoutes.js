@@ -2,15 +2,19 @@ const express = require('express');
 const router = express.Router();
 const petController = require('../controllers/petController');
 const upload = require('../middleware/upload')
-router.get('/list', petController.getAllPets);
+const authMiddleware = require('../middleware/auth');
 
-router.post('/new', upload.single('petPicture'), petController.createPet);
+router.get('/list', authMiddleware, petController.getAllPets);
 
-router.get('/view/:id', petController.getPetById);
+router.post('/new',authMiddleware, upload.single('petPicture'), petController.createPet);
 
-router.put('/edit/:id',upload.single('petPicture'), petController.updatePet);
+router.get('/view/:id',authMiddleware, petController.getPetById);
 
-router.delete('/remove/:id', petController.deletePet);
+// router.put('/edit/:id',upload.single('petPicture'),authMiddleware, petController.updatePet);
+router.put('/edit/:id', authMiddleware, upload.single('petPicture'), petController.updatePet);
+
+
+router.delete('/remove/:id', authMiddleware, petController.deletePet);
 
 const registerRoutes = (app) => {
     app.use('/api/pets', router); 
