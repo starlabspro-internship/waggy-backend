@@ -10,9 +10,9 @@ const adoptionHistoryRoutes = require('./adoptionHistoryRoutes')
 const adoptionListingRoutes = require('./adoptionListingsRoutes')
 const adoptionRequestRoutes = require('./adoptionRequestRoutes')
 const matchHistoryRoutes = require('./matchHistoryRoutes')
+const matchingListingRoutes = require("./matchingListingRoutes")
 const passwordRoutes = require('./passwordRoutes')
 const auth = require('./auth') // register,login, token, refresh token routes
-
 
 
 module.exports = {
@@ -29,5 +29,6 @@ module.exports = {
   adoptionRequestRoutes,
   matchHistoryRoutes,
   passwordRoutes,
-  auth
+  auth,
+  matchingListingRoutes
 };

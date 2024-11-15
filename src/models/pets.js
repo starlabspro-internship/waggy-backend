@@ -62,6 +62,14 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'pet1Id',   
       otherKey: 'pet2Id',     
     });
+    Pet.hasMany(models.MatchingListing, {
+      foreignKey: "petId",
+      as: "matchingListings",
+      onDelete: "CASCADE", // Add this line
+    });
+    
+    
+    
   };
 
   return Pet;

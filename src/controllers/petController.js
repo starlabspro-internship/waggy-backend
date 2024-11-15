@@ -1,4 +1,4 @@
-const { Pet } = require('../models'); 
+const { Pet, MatchingListing } = require('../models'); 
 
 
 
@@ -137,30 +137,36 @@ exports.updatePet = async (req, res) => {
 };
 
 
-  exports.deletePet = async (req, res) => {
-    const { id } = req.params; // Pet ID from the URL
-    const userId = req.userId; // User ID from the authenticated token
-  
-    try {
-      // Find the pet that belongs to the authenticated user
-      const pet = await Pet.findOne({
-        where: {
-          id: id,
-          userId: userId, // Ensure the pet belongs to this user
-        },
-      });
-  
-      // If pet is not found, return 404
-      if (!pet) {
-        return res.status(404).json({ error: 'Pet not found for this user.' });
-      }
-  
-      // Delete the pet
-      await pet.destroy();
-      res.status(200).json({ message: 'Pet was deleted successfully.' });
-    } catch (error) {
-      console.error('Error during deletion:', error);
-      res.status(500).json({ error: 'An error occurred while deleting the pet.' });
+exports.deletePet = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.userId;
+
+  try {
+    const pet = await Pet.findOne({
+      where: {
+        id: id,
+        userId: userId,
+      },
+    });
+
+    if (!pet) {
+      return res.status(404).json({ error: 'Pet not found for this user.' });
     }
-  };
+
+    // Delete related matching listings first
+    await MatchingListing.destroy({
+      where: {
+        petId: id,
+      },
+    });
+
+    // Now delete the pet
+    await pet.destroy();
+    res.status(200).json({ message: 'Pet was deleted successfully.' });
+  } catch (error) {
+    console.error('Error during deletion:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the pet.' });
+  }
+};
+
   

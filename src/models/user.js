@@ -30,6 +30,12 @@ module.exports = (sequelize) => {
         foreignKey: "receiverUserID",
         as: "receivedMessages", // Alias for received messages
       });
+
+      User.hasMany(models.MatchingListing, {
+        foreignKey: "userId",
+        as: "matchingListings",
+      });
+      
     }
   }
 
