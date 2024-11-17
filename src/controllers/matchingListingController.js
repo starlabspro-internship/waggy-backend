@@ -23,38 +23,78 @@ exports.createMatchingListing = async (req, res) => {
 };
 
 
-// Get all MatchingListings
-  exports.getAllMatchingListings = async (req, res) => {
-    try {
-      // Fetch all matching listings with associated owner (User) and pet (Pet), also including the user's profile
-      const listings = await MatchingListing.findAll({
-        include: [
-          {
-            model: User,
-            as: "owner",
-            attributes: ['email'],
-            include: [
-              {
-                model: Profile,  // Include the profile associated with the user
-                as: "profile",   // The alias you defined in the User model association
-                attributes: ['firstName', 'organisationName', "profilePicture", "address", "phoneNumber"] // Adjust this to include the relevant profile attributes
-              }
-            ]
-          },
-          { model: Pet, as: "pet" }
-        ],
-      });
-  
+// Get all MatchingListings with filters (excluding species from scoring)
+exports.getAllMatchingListings = async (req, res) => {
+  try {
+    const { species, breed, gender, location, colors, age } = req.query;
 
-  
-      res.status(200).json(listings);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to fetch matching listings" });
+    // Ensure species is provided (mandatory filter)
+    if (!species) {
+      return res.status(400).json({ error: "Species filter is required." });
     }
-  };
+
+    // Build the filter criteria based on query parameters (species is mandatory)
+    const whereClause = { species }; // Only include species in whereClause initially
+    const scoreWeights = { breed: 10, gender: 11, colors: 10, location: 12, age: 10}; // Weights for scoring system
+ 
+    
+    // Fetch matching listings with associated owner (User) and pet (Pet)
+    const listings = await MatchingListing.findAll({
+      where: {
+        status: "Available", // Only include listings with status "Available"
+      },
+      include: [
+        {
+          model: User,
+          as: "owner",
+          attributes: ["email"],
+          include: [
+            {
+              model: Profile,
+              as: "profile",
+              attributes: [
+                "firstName",
+
+              ],
+            },
+          ],
+        },
+        {
+          model: Pet,
+          as: "pet",
+          where: whereClause, // Apply species filter 
+        },
+      ],
+      order: [["pet", "score", "DESC"]], // Initially order by predefined score
+    });
+
+    // Calculate additional score based on matched filters (excluding species)
+    const scoredListings = listings.map((listing) => {
+    let score = listing.pet.score || 0;
+
+      if (breed && listing.pet.breed === breed) score += scoreWeights.breed;
+      if (gender && listing.pet.gender === gender) score += scoreWeights.gender;
+      if (colors && listing.pet.colors?.includes(colors)) score += scoreWeights.colors;
+      if (location && listing.owner?.profile?.location === location) score += scoreWeights.location;
+      if (age && listing.pet.age == age) score += scoreWeights.age;
 
 
+
+      listing.pet.score = score;
+      return listing;
+    });
+
+    // Sort listings by the new calculated score
+    scoredListings.sort((a, b) => b.pet.score - a.pet.score);
+
+    res.status(200).json(scoredListings);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch matching listings" });
+  }
+};
+
+/// Dedicated to current user to get the data of the pets that are currently listed by the user
 exports.getMatchingListingByPetId = async (req, res) => {
 
   try {
@@ -79,14 +119,30 @@ exports.getMatchingListingByPetId = async (req, res) => {
 };
 
 
-// Get a single MatchingListing by ID
+// Get a single MatchingListing by ID of the other user
 exports.getMatchingListingById = async (req, res) => {
   try {
     const { id } = req.params;
     const listing = await MatchingListing.findByPk(id, {
       include: [
-        { model: User, as: "owner" },
-        { model: Pet, as: "pet" },
+        {
+          model: User,
+          as: "owner",
+          attributes: ["email"],
+          include: [
+            {
+              model: Profile,
+              as: "profile",
+              attributes: [
+                "firstName",
+              ],
+            },
+          ],
+        },
+        {
+          model: Pet,
+          as: "pet",
+        },
       ],
     });
 
