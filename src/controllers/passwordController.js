@@ -6,6 +6,8 @@ const { Op } = require('sequelize');
 const generatePasswordResetEmail = require('../template/passwordResetedTemplate');
 const generateForgotPasswordEmail = require('../template/forgotPasswordTemplate');
 
+console.log("Generating password reset", process.env.WAGGY_FRONTEND_URL)
+
 const passwordController = {
   // Forgot Password Handler
   async forgotPassword(req, res) {

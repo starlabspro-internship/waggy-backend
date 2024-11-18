@@ -1,10 +1,11 @@
 const { MatchingListing, User, Pet, Profile } = require("../models");
+const { Op } = require("sequelize");
 
 
 exports.createMatchingListing = async (req, res) => {
     try {
         const { petId, status } = req.body;
-        const userId = req.userId; // Extract userId from the authenticated request
+        const userId = req.userId;
 
         if (!petId || !status) {
             return res.status(400).json({ error: "PetId and status are required" });
@@ -26,7 +27,10 @@ exports.createMatchingListing = async (req, res) => {
 // Get all MatchingListings with filters (excluding species from scoring)
 exports.getAllMatchingListings = async (req, res) => {
   try {
-    const { species, breed, gender, location, colors, age } = req.query;
+    const { species, breed, gender, address, colors, age } = req.query;
+    const userId = req.userId;
+
+    console.log(address, "address");
 
     // Ensure species is provided (mandatory filter)
     if (!species) {
@@ -35,9 +39,8 @@ exports.getAllMatchingListings = async (req, res) => {
 
     // Build the filter criteria based on query parameters (species is mandatory)
     const whereClause = { species }; // Only include species in whereClause initially
-    const scoreWeights = { breed: 10, gender: 11, colors: 10, location: 12, age: 10}; // Weights for scoring system
- 
-    
+    const scoreWeights = { breed: 10, gender: 11, colors: 10, address: 12, age: 10 }; // Weights for scoring system
+
     // Fetch matching listings with associated owner (User) and pet (Pet)
     const listings = await MatchingListing.findAll({
       where: {
@@ -48,13 +51,18 @@ exports.getAllMatchingListings = async (req, res) => {
           model: User,
           as: "owner",
           attributes: ["email"],
+          where: {
+            id: {
+              [Op.ne]: userId  // Exclude listings by the current user
+            }
+          },
           include: [
             {
               model: Profile,
               as: "profile",
               attributes: [
                 "firstName",
-
+                "address"
               ],
             },
           ],
@@ -70,15 +78,13 @@ exports.getAllMatchingListings = async (req, res) => {
 
     // Calculate additional score based on matched filters (excluding species)
     const scoredListings = listings.map((listing) => {
-    let score = listing.pet.score || 0;
+      let score = listing.pet.score || 0;
 
       if (breed && listing.pet.breed === breed) score += scoreWeights.breed;
       if (gender && listing.pet.gender === gender) score += scoreWeights.gender;
       if (colors && listing.pet.colors?.includes(colors)) score += scoreWeights.colors;
-      if (location && listing.owner?.profile?.location === location) score += scoreWeights.location;
+      if (address && listing.owner?.profile?.address === address) score += scoreWeights.address;
       if (age && listing.pet.age == age) score += scoreWeights.age;
-
-
 
       listing.pet.score = score;
       return listing;
@@ -93,6 +99,7 @@ exports.getAllMatchingListings = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch matching listings" });
   }
 };
+
 
 /// Dedicated to current user to get the data of the pets that are currently listed by the user
 exports.getMatchingListingByPetId = async (req, res) => {
@@ -135,6 +142,8 @@ exports.getMatchingListingById = async (req, res) => {
               as: "profile",
               attributes: [
                 "firstName",
+                "address",
+                "profilePicture"
               ],
             },
           ],

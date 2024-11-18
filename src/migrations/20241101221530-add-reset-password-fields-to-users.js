@@ -2,14 +2,21 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('Users', 'resetPasswordToken', {
-      type: Sequelize.STRING,
-      allowNull: true,
-    });
-    await queryInterface.addColumn('Users', 'resetPasswordExpires', {
-      type: Sequelize.DATE,
-      allowNull: true,
-    });
+    const tableDefinition = await queryInterface.describeTable('Users');
+    
+    if (!tableDefinition.resetPasswordToken) {
+      await queryInterface.addColumn('Users', 'resetPasswordToken', {
+        type: Sequelize.STRING,
+        allowNull: true,
+      });
+    }
+    
+    if (!tableDefinition.resetPasswordExpires) {
+      await queryInterface.addColumn('Users', 'resetPasswordExpires', {
+        type: Sequelize.DATE,
+        allowNull: true,
+      });
+    }
   },
 
   down: async (queryInterface, Sequelize) => {

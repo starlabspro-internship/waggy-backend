@@ -29,7 +29,8 @@ const {
   adoptionRequestRoutes,
   matchHistoryRoutes,
   auth,
-  matchingListingRoutes
+  matchingListingRoutes,
+  matchRequestRoutes
 } = require('./src/routes/index');
 
 app.use(cors());
@@ -56,6 +57,7 @@ matchHistoryRoutes(app);
 auth(app);
 passwordRoutes(app);
 matchingListingRoutes(app);
+matchRequestRoutes(app);
 
 const port = process.env.PORT || 3000;
 

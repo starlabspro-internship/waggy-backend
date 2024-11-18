@@ -13,6 +13,7 @@ const matchHistoryRoutes = require('./matchHistoryRoutes')
 const matchingListingRoutes = require("./matchingListingRoutes")
 const passwordRoutes = require('./passwordRoutes')
 const auth = require('./auth') // register,login, token, refresh token routes
+const matchRequestRoutes = require('./matchingRequestRoutes')
 
 
 module.exports = {
@@ -30,5 +31,7 @@ module.exports = {
   matchHistoryRoutes,
   passwordRoutes,
   auth,
-  matchingListingRoutes
+  matchingListingRoutes,
+  matchRequestRoutes
+
 };

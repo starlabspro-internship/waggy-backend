@@ -4,7 +4,7 @@ const matchingListingController = require("../controllers/matchingListingControl
 const authMiddleware = require('../middleware/auth');
 
 router.post("/new", authMiddleware, matchingListingController.createMatchingListing);
-router.get("/list", matchingListingController.getAllMatchingListings);
+router.get("/list",authMiddleware, matchingListingController.getAllMatchingListings);
 router.get("/view/:id", matchingListingController.getMatchingListingById);
 router.put("/edit/:id", matchingListingController.updateMatchingListing);
 router.delete("/remove/:id", matchingListingController.deleteMatchingListing);

@@ -35,6 +35,15 @@ module.exports = (sequelize) => {
         foreignKey: "userId",
         as: "matchingListings",
       });
+      User.hasMany(models.MatchingRequest, {
+        foreignKey: "senderUserId",
+        as: "sentMatchRequests",
+      });
+      
+      User.hasMany(models.MatchingRequest, {
+        foreignKey: "receiverUserId",
+        as: "receivedMatchRequests",
+      });
       
     }
   }
@@ -44,10 +53,7 @@ module.exports = (sequelize) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: true,
-        },
+        unique: true 
       },
       password: {
         type: DataTypes.STRING,
@@ -58,10 +64,6 @@ module.exports = (sequelize) => {
       },
       resetPassword: {
         type: DataTypes.STRING,
-        allowNull: true,
-      },
-      resetPasswordExpires: {
-        type: DataTypes.DATE,
         allowNull: true,
       },
       resetPasswordExpires: {

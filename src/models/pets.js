@@ -67,8 +67,18 @@ module.exports = (sequelize, DataTypes) => {
       as: "matchingListings",
       onDelete: "CASCADE", // Add this line
     });
+    Pet.hasMany(models.MatchingRequest, {
+      foreignKey: "senderPetId",
+      as: "sentMatchRequests",
+    });
     
     
+    Pet.hasMany(models.MatchingRequest, {
+      foreignKey: "receiverPetId",
+      as: "receivedMatchRequests",
+    });
+    
+  
     
   };
 
