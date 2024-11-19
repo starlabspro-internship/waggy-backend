@@ -30,8 +30,6 @@ exports.getAllMatchingListings = async (req, res) => {
     const { species, breed, gender, address, colors, age } = req.query;
     const userId = req.userId;
 
-    console.log(address, "address");
-
     // Ensure species is provided (mandatory filter)
     if (!species) {
       return res.status(400).json({ error: "Species filter is required." });

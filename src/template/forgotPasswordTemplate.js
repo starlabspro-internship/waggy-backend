@@ -1,4 +1,4 @@
-const generateForgotPasswordEmail = (resetLink) => {
+const generateForgotPasswordEmail = (resetLink, user, pet) => {
     console.log(resetLink)
   return `
 <!DOCTYPE html>
@@ -103,7 +103,7 @@ const generateForgotPasswordEmail = (resetLink) => {
         <div class="email-body">
            <div class="header">
                     <img class="header-image" src="https://storage.googleapis.com/menu-view-storage/waggy/Waggy.png" alt="Wagy Logo" />
-                    <h1>Reset Your Password</h1>
+                    <h1> Your Password</h1>
           </div>
             <div class="content">
                 <div class="welcome-message">We received a request to reset your password.</div>
