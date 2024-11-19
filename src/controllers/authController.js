@@ -126,7 +126,7 @@ exports.refreshToken = async (req, res) => {
     const newAccessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "7h",
     });
-    res.json({accessToken, refreshToken });
+    res.json({accessToken: newAccessToken, refreshToken });
   } catch (error) {
     console.error("Error refreshing token:", error);
     res.sendStatus(403); // Forbidden

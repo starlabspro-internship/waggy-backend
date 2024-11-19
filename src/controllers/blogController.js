@@ -1,4 +1,4 @@
-const { Blog, User } = require('../models');
+const { Blog, User , Profile } = require('../models');
 
 exports.createBlog = async (req, res) => {
   const { title, description, userID } = req.body;
@@ -14,8 +14,22 @@ exports.createBlog = async (req, res) => {
 exports.getBlogs = async (req, res) => {
   try {
     const blogs = await Blog.findAll({
-      include: [{ model: User, as: 'author' }], // Include author details
+      include: [
+        {
+          model: User,
+          as: 'author',
+          attributes: { exclude: ['password', 'resetPassword', 'resetPasswordExpires', 'resetPasswordToken', 'refreshToken'] }, // Excluding sensitive fields
+          include: [
+            {
+              model: Profile,
+              as: 'profile', // Assuming Profile is associated with User
+            }
+          ]
+        }
+      ]
     });
+
+    // Send the data back
     res.json(blogs);
   } catch (error) {
     res.status(500).json({ error: error.message });
