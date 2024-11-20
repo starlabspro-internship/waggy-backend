@@ -1,4 +1,4 @@
-const { Pet, MatchingListing } = require('../models'); 
+const { Pet, MatchingListing ,MatchingRequest} = require('../models'); 
 
 
 
@@ -138,10 +138,11 @@ exports.updatePet = async (req, res) => {
 
 
 exports.deletePet = async (req, res) => {
-  const { id } = req.params;
-  const userId = req.userId;
+  const { id } = req.params; // Pet ID to delete
+  const userId = req.userId; // ID of the user making the request
 
   try {
+    // Find the pet that belongs to the user
     const pet = await Pet.findOne({
       where: {
         id: id,
@@ -150,22 +151,37 @@ exports.deletePet = async (req, res) => {
     });
 
     if (!pet) {
-      return res.status(404).json({ error: 'Pet not found for this user.' });
+      return res.status(404).json({ error: "Pet not found for this user." });
     }
 
-    // Delete related matching listings first
+    // Delete related matching requests where the pet is the sender
+    await MatchingRequest.destroy({
+      where: {
+        senderPetId: id,
+      },
+    });
+
+    // Delete related matching requests where the pet is the receiver
+    await MatchingRequest.destroy({
+      where: {
+        receiverPetId: id,
+      },
+    });
+
+    // Delete related matching listings
     await MatchingListing.destroy({
       where: {
         petId: id,
       },
     });
 
-    // Now delete the pet
+    // Finally, delete the pet
     await pet.destroy();
-    res.status(200).json({ message: 'Pet was deleted successfully.' });
+
+    res.status(200).json({ message: "Pet and related data deleted successfully." });
   } catch (error) {
-    console.error('Error during deletion:', error);
-    res.status(500).json({ error: 'An error occurred while deleting the pet.' });
+    console.error("Error during deletion:", error);
+    res.status(500).json({ error: "An error occurred while deleting the pet." });
   }
 };
 

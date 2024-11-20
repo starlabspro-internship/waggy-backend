@@ -19,13 +19,15 @@ module.exports = (sequelize) => {
       // The pet that initiated the match request
       MatchingRequest.belongsTo(models.Pet, {
         foreignKey: "senderPetId",
-        as: "senderPet"
+        as: "senderPet",
+        onDelete: "CASCADE",
       });
 
       // The pet being requested to match with
       MatchingRequest.belongsTo(models.Pet, {
         foreignKey: "receiverPetId",
-        as: "receiverPet"
+        as: "receiverPet",
+        onDelete: "CASCADE",
       });
     }
   }

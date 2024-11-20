@@ -1,4 +1,4 @@
-const { MatchingRequest, User, Pet } = require("../models");
+const { MatchingRequest, User, Pet, Profile } = require("../models");
 const { Op } = require("sequelize");
 
 exports.createMatchingRequest = async (req, res) => {
@@ -6,6 +6,7 @@ exports.createMatchingRequest = async (req, res) => {
 
   try {
     const { senderPetId, receiverPetId } = req.body;
+ 
 
     // Verify sender owns the pet
     const senderPet = await Pet.findOne({
@@ -24,7 +25,7 @@ exports.createMatchingRequest = async (req, res) => {
       where: { id: receiverPetId },
       attributes: ["userId"],
     });
-
+    console.log(receiverPet, " ska pet other?")
     if (!receiverPet) {
       return res.status(404).json({
         success: false,
@@ -76,23 +77,18 @@ exports.createMatchingRequest = async (req, res) => {
   }
 };
 
-
-
-// Get all MatchingRequests for the current user (both sent and received)
-exports.getAllMatchingRequests = async (req, res) => {
-// Get all matching requests made by the user
+// 
+exports.getAllMatchingRequestsOfTheSender = async (req, res) => {
   try {
     const userId = req.userId; // Assuming userId is provided from authenticated user
 
-    // Fetch all matching requests related to the user
+    // Fetch all matching requests where the user is the sender and status is pending
     const requests = await MatchingRequest.findAll({
       where: {
-        [Op.or]: [
-          { senderUserId: userId },
-          { receiverUserId: userId },
-        ],
+        senderUserId: userId,
+        status: 'Pending',
       },
-      attributes: ['id', 'status', 'senderPetId'],
+      attributes: ['id', 'status', 'senderPetId', "receiverPetId"],
       include: [
         {
           model: Pet,
@@ -102,11 +98,11 @@ exports.getAllMatchingRequests = async (req, res) => {
         {
           model: Pet,
           as: 'receiverPet', // Using the alias defined in the association for receiver pet
-          attributes: ['name'], // Fetch only the 'name' attribute
+          attributes: ['name', ], // Fetch only the 'name' attribute
         },
+        
       ],
     });
-
     if (requests.length === 0) {
       return res.status(404).json({
         success: false,
@@ -114,18 +110,11 @@ exports.getAllMatchingRequests = async (req, res) => {
       });
     }
 
-    // Prepare the response data for all requests
-    const responseData = requests.map(request => ({
-      id: request.id,
-      status: request.status,
-      senderPetId: request.senderPetId,
-      senderPetName: request.senderPet?.name || "Unknown Pet",
-      receiverPetName: request.receiverPet?.name || "Unknown Pet",
-    }));
+    // Prepare the response data for all request
 
     res.json({
       success: true,
-      data: responseData,
+      data: requests,
     });
   } catch (error) {
     console.error("Error fetching matching requests:", error);
@@ -135,6 +124,86 @@ exports.getAllMatchingRequests = async (req, res) => {
     });
   }
 };
+
+exports.getAllInvitationsForUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const invitations = await MatchingRequest.findAll({
+      where: {
+        receiverUserId: userId,
+        status: 'Pending',
+      },
+      attributes: ['id', 'status', 'senderPetId', 'receiverPetId'],
+      include: [
+        {
+          model: Pet,
+          as: 'senderPet',
+          attributes: ['name'],
+        },
+        {
+          model: Pet,
+          as: 'receiverPet',
+          attributes: ['name'],
+        },
+      ],
+    });
+
+    res.json({
+      success: true,
+      data: invitations,
+    });
+  } catch (error) {
+    console.error("Error fetching invitations for user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching invitations for user",
+    });
+  }
+};
+
+
+// Get all MatchingRequests for the current user (both sent and received)
+exports.getAllAcceptedRequests = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const acceptedRequests = await MatchingRequest.findAll({
+      where: {
+        [Op.or]: [
+          { senderUserId: userId },
+          { receiverUserId: userId },
+        ],
+        status: 'Accepted',
+      },
+      attributes: ['id', 'status', 'senderPetId', 'receiverPetId'],
+      include: [
+        {
+          model: Pet,
+          as: 'senderPet',
+          attributes: ['name'],
+        },
+        {
+          model: Pet,
+          as: 'receiverPet',
+          attributes: ['name'],
+        },
+      ],
+    });
+
+    res.json({
+      success: true,
+      data: acceptedRequests,
+    });
+  } catch (error) {
+    console.error("Error fetching accepted requests:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching accepted requests",
+    });
+  }
+};
+
 
 
 // Get the matching request status and sender pet ID
@@ -194,6 +263,78 @@ exports.getMatchingRequestStatus = async (req, res) => {
     });
   }
 };
+
+
+
+exports.getMatchingRequestStatusbyId = async (req, res) => {
+  try {
+    const { matchRequestId } = req.params; // Assuming primary key is matchId
+    const userId = req.userId;
+
+    console.log(matchRequestId);
+
+    // Fetch the matching request by primary key (matchId)
+    const request = await MatchingRequest.findOne({
+      where: {
+        id: matchRequestId, // Primary key
+        [Op.or]: [
+          { senderUserId: userId }, // Ensures the user is part of the request
+          { receiverUserId: userId },
+        ],
+      },
+      attributes: ['id', 'status', 'senderPetId'],
+      include: [
+        {
+          model: Pet,
+          as: 'senderPet', // Association alias
+          attributes: ['name', 'species', 'age', 'gender', 'petPicture', 'breed', 'interests'],
+        },
+        {
+          model: Pet,
+          as: 'receiverPet', // Association alias
+          attributes: ['name'],
+        },
+        {
+          model: User,
+          as: 'sender', // Association alias for sender user
+          attributes: [ 'email'],
+          include: [
+            {
+              model: Profile,
+              as: "profile",
+              attributes: [
+                "firstName",
+                "address"
+              ],
+            },
+          ],
+        },
+
+      ],
+    });
+
+    // Handle cases where the match request is not found
+    if (!request) {
+      return res.status(404).json({
+        success: false,
+        message: "Matching request not found",
+      });
+    }
+
+    // Send the successful response
+    res.json({
+      success: true,
+      data: request,
+    });
+  } catch (error) {
+    console.error("Error fetching matching request status:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching matching request status",
+    });
+  }
+};
+
 
 
 // Update MatchingRequest status (Accept/Decline)
