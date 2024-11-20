@@ -1,4 +1,7 @@
 const { MatchingRequest, User, Pet, Profile } = require("../models");
+const sendEmail = require("../services/emailService");
+const generateAcceptFriendRequestEmail = require("../template/acceptFriendRequest");
+console.log(generateAcceptFriendRequestEmail)
 const { Op } = require("sequelize");
 
 exports.createMatchingRequest = async (req, res) => {
@@ -304,7 +307,8 @@ exports.getMatchingRequestStatusbyId = async (req, res) => {
               as: "profile",
               attributes: [
                 "firstName",
-                "address"
+                "address",
+                "profilePicture"
               ],
             },
           ],
@@ -337,12 +341,14 @@ exports.getMatchingRequestStatusbyId = async (req, res) => {
 
 
 
+
+
 // Update MatchingRequest status (Accept/Decline)
 exports.updateMatchingRequestStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     if (!["Accepted", "Declined"].includes(status)) {
       return res.status(400).json({
@@ -357,6 +363,31 @@ exports.updateMatchingRequestStatus = async (req, res) => {
         receiverUserId: userId,
         status: "Pending",
       },
+      include: [
+        {
+          model: User,
+          as: 'sender',
+          attributes: ['email'],
+          include: [
+            {
+              model: Profile,
+              as: "profile",
+              attributes: ['firstName', "organisationName"],
+            },
+          ],
+        },
+        {
+          model: User,
+          as: 'receiver',
+          include: [
+            {
+              model: Profile,
+              as: "profile",
+              attributes: ['firstName', "organisationName"],
+            },
+          ],
+        },
+      ],
     });
 
     if (!request) {
@@ -371,7 +402,18 @@ exports.updateMatchingRequestStatus = async (req, res) => {
       request.matchedAt = new Date();
     }
     await request.save();
+    const senderEmail = request.sender.email;
+    const senderName = request.sender.profile.firstName || request.sender.profile.organisationName;
+    const receiverName = request.receiver.profile.firstName || request.receiver.profile.firstName;
 
+    // Send email notification if request is accepted
+    if (status === "Accepted") {
+      const emailContent = generateAcceptFriendRequestEmail(receiverName, senderName);
+      await sendEmail(senderEmail, 'Your Match Request Was Accepted!', emailContent);
+    } else if (status === "Declined") {
+      const emailContent = generateAcceptFriendRequestEmail(receiverName, senderName);
+      await sendEmail(senderEmail, 'Your Match Request Was Accepted!', emailContent);
+    }
     res.json({
       success: true,
       data: request,

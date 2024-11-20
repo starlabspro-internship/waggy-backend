@@ -12,11 +12,10 @@ router.get("/list-received",authMiddleware, matchingRequestController.getAllInvi
 
 
 
-
-
 router.get("/view/:receiverPetId",authMiddleware, matchingRequestController.getMatchingRequestStatus);
+
 router.get("/view-id/:matchRequestId",authMiddleware, matchingRequestController.getMatchingRequestStatusbyId);
-router.put("/edit/:id", matchingRequestController.updateMatchingRequestStatus);
+router.put("/edit/:id", authMiddleware, matchingRequestController.updateMatchingRequestStatus);
 router.delete("/remove/:id", matchingRequestController.deleteMatchingRequest);
 
 
