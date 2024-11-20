@@ -1,5 +1,5 @@
 .env
 node_modules
 src/config/dbConfig.json
-uploads/
-
+uploads/*
+!uploads/defaultProfilePicture.jpg
