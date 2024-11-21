@@ -1,7 +1,7 @@
 const { MatchingRequest, User, Pet, Profile } = require("../models");
 const sendEmail = require("../services/emailService");
 const generateAcceptFriendRequestEmail = require("../template/acceptFriendRequest");
-console.log(generateAcceptFriendRequestEmail)
+
 const { Op } = require("sequelize");
 
 exports.createMatchingRequest = async (req, res) => {
@@ -28,7 +28,7 @@ exports.createMatchingRequest = async (req, res) => {
       where: { id: receiverPetId },
       attributes: ["userId"],
     });
-    console.log(receiverPet, " ska pet other?")
+  
     if (!receiverPet) {
       return res.status(404).json({
         success: false,
@@ -274,7 +274,7 @@ exports.getMatchingRequestStatusbyId = async (req, res) => {
     const { matchRequestId } = req.params; // Assuming primary key is matchId
     const userId = req.userId;
 
-    console.log(matchRequestId);
+
 
     // Fetch the matching request by primary key (matchId)
     const request = await MatchingRequest.findOne({
