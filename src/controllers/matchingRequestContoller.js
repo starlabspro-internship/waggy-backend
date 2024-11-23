@@ -1,7 +1,9 @@
 const { MatchingRequest, User, Pet, Profile } = require("../models");
 const sendEmail = require("../services/emailService");
 const generateAcceptFriendRequestEmail = require("../template/acceptFriendRequest");
+const generateDeclineFriendRequestEmail = require("../template/declineFriendRequest");
 
+console.log(generateAcceptFriendRequestEmail)
 const { Op } = require("sequelize");
 
 exports.createMatchingRequest = async (req, res) => {
@@ -9,6 +11,9 @@ exports.createMatchingRequest = async (req, res) => {
 
   try {
     const { senderPetId, receiverPetId } = req.body;
+
+
+    console.log(senderPetId, receiverPetId)
  
 
     // Verify sender owns the pet
@@ -28,7 +33,7 @@ exports.createMatchingRequest = async (req, res) => {
       where: { id: receiverPetId },
       attributes: ["userId"],
     });
-  
+    console.log(receiverPet, " ska pet other?")
     if (!receiverPet) {
       return res.status(404).json({
         success: false,
@@ -211,9 +216,11 @@ exports.getAllAcceptedRequests = async (req, res) => {
 
 // Get the matching request status and sender pet ID
 exports.getMatchingRequestStatus = async (req, res) => {
+  console.log("ka initim")
   try {
     const { receiverPetId } = req.params;
     const userId = req.userId;
+    console.log(receiverPetId, "ka iddddd")
 
     const request = await MatchingRequest.findOne({
       where: {
@@ -274,7 +281,7 @@ exports.getMatchingRequestStatusbyId = async (req, res) => {
     const { matchRequestId } = req.params; // Assuming primary key is matchId
     const userId = req.userId;
 
-
+    console.log(matchRequestId);
 
     // Fetch the matching request by primary key (matchId)
     const request = await MatchingRequest.findOne({
@@ -411,8 +418,8 @@ exports.updateMatchingRequestStatus = async (req, res) => {
       const emailContent = generateAcceptFriendRequestEmail(receiverName, senderName);
       await sendEmail(senderEmail, 'Your Match Request Was Accepted!', emailContent);
     } else if (status === "Declined") {
-      const emailContent = generateAcceptFriendRequestEmail(receiverName, senderName);
-      await sendEmail(senderEmail, 'Your Match Request Was Accepted!', emailContent);
+      const emailContent = generateDeclineFriendRequestEmail(receiverName, senderName);
+      await sendEmail(senderEmail, 'Your Match Request Was Declined!', emailContent);
     }
     res.json({
       success: true,
