@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable('AdoptionListings', {
       id: {
         type: Sequelize.INTEGER,
@@ -15,6 +15,8 @@ module.exports = {
           model: 'Pets',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       userID: {
         type: Sequelize.INTEGER,
@@ -23,6 +25,8 @@ module.exports = {
           model: 'Users',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       adoptionStatus: {
         type: Sequelize.STRING,
@@ -46,7 +50,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface) {
     await queryInterface.dropTable('AdoptionListings');
   },
 };

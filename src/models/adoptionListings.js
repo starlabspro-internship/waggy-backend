@@ -16,17 +16,25 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    petID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     userID: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: "Users",
+        key: "id",
+      },
+    },
+    petID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Pets",
+        key: "id",
+      },
     },
     adoptionStatus: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: DataTypes.ENUM("Available", "Unavailable", "Pending"),
+      defaultValue: "Available",
     },
     listedAt: {
       type: DataTypes.DATE,

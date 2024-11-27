@@ -6,18 +6,18 @@ const {
   updateAdoptionListing,
   deleteAdoptionListing,
 } = require('../controllers/adoptionListingsController');
-
+const authMiddleware = require('../middleware/auth');
 const router = express.Router();
 
 // Routes for Adoption Listings
-router.post('/new', createAdoptionListing); // POST /api/adoption-listings
-router.get('/list', getAdoptionListings); // GET /api/adoption-listings
-router.get('/view/:id', getAdoptionListingById); // GET /api/adoption-listings/:id
-router.put('/edit/:id', updateAdoptionListing); // PUT /api/adoption-listings/:id
-router.delete('/remove/:id', deleteAdoptionListing); // DELETE /api/adoption-listings/:id
+router.post('/new',authMiddleware, createAdoptionListing); 
+router.get('/list' ,authMiddleware, getAdoptionListings); 
+router.get('/view/:id',authMiddleware, getAdoptionListingById); 
+router.put('/edit/:id',authMiddleware, updateAdoptionListing); 
+router.delete('/remove/:id', deleteAdoptionListing); 
 
 const registerRoutes = (app) => {
-  app.use('/api/adoption-listings', router); // Use /api/adoption-listings as base path
+  app.use('/api/adoption-listings', router); 
 };
 
 module.exports = registerRoutes;

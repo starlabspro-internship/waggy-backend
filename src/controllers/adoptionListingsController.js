@@ -1,21 +1,25 @@
 const { AdoptionListing, User, Pet } = require('../models');
 
 exports.createAdoptionListing = async (req, res) => {
-  const { petID, userID, adoptionStatus, listedAt } = req.body;
+  
+  const { petId, adoptionStatus } = req.body;
+        const userId = req.userId
   try {
     // Validate input data
-    if (!petID || !userID || !adoptionStatus) {
+    if (!petId || !userId || !adoptionStatus) {
+  
       return res
         .status(400)
         .json({ message: 'petID, userID, and adoptionStatus are required.' });
     }
 
     const newAdoptionListing = await AdoptionListing.create({
-      petID,
-      userID,
-      adoptionStatus,
-      listedAt: listedAt || new Date(),
+      petID: petId ,
+      userID: userId ,
+      adoptionStatus: adoptionStatus,
+      listedAt:  new Date(),
     });
+
     res.status(201).json(newAdoptionListing);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -37,17 +41,16 @@ exports.getAdoptionListings = async (req, res) => {
 };
 
 exports.getAdoptionListingById = async (req, res) => {
-  const { id } = req.params;
+  
   try {
-    const adoptionListing = await AdoptionListing.findOne({
-      where: { id },
-      include: [
-        { model: User, as: 'user' },
-        { model: Pet, as: 'pet' },
-      ],
-    });
+    const { id } = req.params; // Get petId from request parameters
+    const userId = req.userId; // Get userId from request parameters
 
+    const adoptionListing = await AdoptionListing.findOne({
+      where: { petId: id, userId: userId}, // Search by petId
+});
     if (!adoptionListing) {
+      console.log('Not found');
       return res.status(404).json({ message: 'Adoption listing not found.' });
     }
     res.json(adoptionListing);
@@ -58,23 +61,27 @@ exports.getAdoptionListingById = async (req, res) => {
 
 exports.updateAdoptionListing = async (req, res) => {
   const { id } = req.params;
-  const { petID, userID, adoptionStatus, listedAt } = req.body;
-
+  const updatedData = req.body;
+  const { adoptionStatus } = req.body 
+  console.log(adoptionStatus);
+  console.log(id);
+ 
   try {
-    const adoptionListing = await AdoptionListing.findByPk(id);
+    const adoptionListing = await AdoptionListing.findOne({
+      where: { petID: id },  // Assuming 'petID' is the correct column
+    });
+    console.log("adoption listing: " , adoptionListing.adoptionStatus);
     if (!adoptionListing) {
       return res.status(404).json({ message: 'Adoption listing not found.' });
     }
 
-    // Update the adoption listing entry
-    adoptionListing.petID = petID || adoptionListing.petID;
-    adoptionListing.userID = userID || adoptionListing.userID;
-    adoptionListing.adoptionStatus =
-      adoptionStatus || adoptionListing.adoptionStatus;
-    adoptionListing.listedAt = listedAt || adoptionListing.listedAt;
+   
+    if (adoptionStatus) {
+      await adoptionListing.update({ adoptionStatus });
+    };
 
-    await adoptionListing.save();
     res.json(adoptionListing);
+    console.log(" adoption status changed to: ",adoptionListing.adoptionStatus);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

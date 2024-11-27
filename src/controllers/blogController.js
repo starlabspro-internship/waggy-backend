@@ -51,39 +51,7 @@ exports.viewBlog = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-exports.updateBlog = async (req, res) => {
-  const { id } = req.params;
-  
-  try {
-    // Find the blog by ID
-    const blog = await Blog.findByPk(id);
 
-    if (!blog) {
-      return res.status(404).json({ error: 'Blog not found.' });
-    }
-
-    // Prepare data for update
-    const updatedData = {
-      title: req.body.title || blog.title,
-      description: req.body.description || blog.description,
-    };
-
-    // If a new image is uploaded, add it to the updated data
-    if (req.file) {
-      updatedData.articleImage = `/uploads/${req.file.filename}`; // Save the file path or URL as needed
-    }
-
-    // Update blog details
-    const updatedBlog = await blog.update(updatedData);
-
-    // Return the updated blog
-    res.status(200).json({ message: 'Blog updated successfully', updatedBlog });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred while updating the blog.' });
-  }
-};
 
 exports.deleteBlog = async (req, res) => {
   const { id } = req.params;
