@@ -1,4 +1,4 @@
-const { AdoptionListing, User, Pet } = require('../models');
+const { AdoptionListing, User, Pet , Profile } = require('../models');
 
 exports.createAdoptionListing = async (req, res) => {
   
@@ -19,7 +19,7 @@ exports.createAdoptionListing = async (req, res) => {
       adoptionStatus: adoptionStatus,
       listedAt:  new Date(),
     });
-
+    console.log("new listing" ,newAdoptionListing);
     res.status(201).json(newAdoptionListing);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -27,14 +27,25 @@ exports.createAdoptionListing = async (req, res) => {
 };
 
 exports.getAdoptionListings = async (req, res) => {
-  try {
-    const adoptionListings = await AdoptionListing.findAll({
-      include: [
-        { model: User, as: 'user' },
-        { model: Pet, as: 'pet' },
-      ], // Include user and pet details
-    });
+    console.log('it is working');
+    try {
+      const adoptionListings = await AdoptionListing.findAll({
+        include: [
+          {
+            model: User, as: 'user',
+            include: [
+              {
+                model: Profile, as : 'profile' ,
+                attributes: ['firstName', 'lastName', 'profilePicture', 'address']
+              }
+            ]
+          },
+          { model: Pet, as: 'pet' }
+        ], // Include user and pet details
+      });
+   
     res.json(adoptionListings);
+ 
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -47,7 +58,19 @@ exports.getAdoptionListingById = async (req, res) => {
     const userId = req.userId; // Get userId from request parameters
 
     const adoptionListing = await AdoptionListing.findOne({
-      where: { petId: id, userId: userId}, // Search by petId
+      where: { petId: id},
+      include: [
+        {
+          model: User, as: 'user',
+          include: [
+            {
+              model: Profile, as : 'profile' ,
+              attributes: ['firstName', 'lastName', 'profilePicture', 'address']
+            }
+          ]
+        },
+        { model: Pet, as: 'pet' }
+      ], // Include user and pet details // Search by petId
 });
     if (!adoptionListing) {
       console.log('Not found');

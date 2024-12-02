@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
     },
     interests: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     breed: {
       type: DataTypes.STRING,
