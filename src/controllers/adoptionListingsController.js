@@ -19,7 +19,7 @@ exports.createAdoptionListing = async (req, res) => {
       adoptionStatus: adoptionStatus,
       listedAt:  new Date(),
     });
-    console.log("new listing" ,newAdoptionListing);
+    
     res.status(201).json(newAdoptionListing);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -56,9 +56,10 @@ exports.getAdoptionListingById = async (req, res) => {
   try {
     const { id } = req.params; // Get petId from request parameters
     const userId = req.userId; // Get userId from request parameters
-
+    console.log(id);
     const adoptionListing = await AdoptionListing.findOne({
-      where: { petId: id},
+      where: { petID: id 
+      },
       include: [
         {
           model: User, as: 'user',
@@ -73,9 +74,10 @@ exports.getAdoptionListingById = async (req, res) => {
       ], // Include user and pet details // Search by petId
 });
     if (!adoptionListing) {
-      console.log('Not found');
+      
       return res.status(404).json({ message: 'Adoption listing not found.' });
     }
+    
     res.json(adoptionListing);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -86,8 +88,7 @@ exports.updateAdoptionListing = async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
   const { adoptionStatus } = req.body 
-  console.log(adoptionStatus);
-  console.log(id);
+ 
  
   try {
     const adoptionListing = await AdoptionListing.findOne({

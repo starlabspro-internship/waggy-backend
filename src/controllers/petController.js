@@ -1,4 +1,4 @@
-const { Pet, MatchingListing ,MatchingRequest , AdoptionListing} = require('../models'); 
+const { Pet, MatchingListing ,MatchingRequest , AdoptionListing , AdoptionRequest} = require('../models'); 
 
 
 
@@ -177,6 +177,11 @@ exports.deletePet = async (req, res) => {
     await AdoptionListing.destroy({
       where: {
         petID: id,
+      },
+    });
+    await AdoptionRequest.destroy({
+      where: {
+        listingID: id,
       },
     });
 

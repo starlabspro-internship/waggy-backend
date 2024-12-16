@@ -4,7 +4,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class AdoptionRequest extends Model {
     static associate(models) {
-      AdoptionRequest.belongsTo(models.User, { foreignKey: 'userID', as: 'user' });
+      AdoptionRequest.belongsTo(models.User, { foreignKey: 'userID', as: 'owner' });
       AdoptionRequest.belongsTo(models.AdoptionListing, { foreignKey: 'listingID', as: 'listing' });
       AdoptionRequest.belongsTo(models.User, { foreignKey: 'requestUserID', as: 'requestingUser' });
     }

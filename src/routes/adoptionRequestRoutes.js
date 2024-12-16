@@ -6,26 +6,26 @@ const {
   updateAdoptionRequest,
   deleteAdoptionRequest,
 } = require('../controllers/adoptionRequestController');
-
+const authMiddleware = require('../middleware/auth');
 const router = express.Router();
 
 
 // Routes for Adoption Requests
 router.post(
-  '/new',
+  '/new',authMiddleware,
   createAdoptionRequest
 );
-router.get('/list', getAdoptionRequests);
+router.get('/list',authMiddleware, getAdoptionRequests);
 router.get(
-  '/view/:id',
+  '/view/:id',authMiddleware , 
   getAdoptionRequestById
 );
 router.put(
-  '/edit/:id',
+  '/edit/:id', authMiddleware , 
   updateAdoptionRequest
 );
 router.delete(
-  '/remove/:id',
+  '/remove/:id', authMiddleware , 
   deleteAdoptionRequest
 );
 const registerRoutes = (app) => {

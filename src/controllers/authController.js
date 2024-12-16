@@ -88,7 +88,7 @@ exports.loginUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
-
+    console.log(user);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid credentials" });
@@ -101,7 +101,7 @@ exports.loginUser = async (req, res) => {
 
     // Use existing refresh token
     const refreshToken = user.refreshToken; // Use the refresh token stored in the database
-
+ 
     res.json({ userId: user.id, accessToken, refreshToken });
   } catch (error) {
     console.error("Error logging in user:", error);
@@ -117,7 +117,7 @@ exports.refreshToken = async (req, res) => {
     // Verify the refresh token
     const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
     const user = await User.findByPk(decoded.id);
-
+  
     if (!user || user.refreshToken !== refreshToken) {
       return res.sendStatus(403); // Forbidden
     }
@@ -128,7 +128,7 @@ exports.refreshToken = async (req, res) => {
     });
     res.json({accessToken: newAccessToken, refreshToken });
   } catch (error) {
-    console.error("Error refreshing token:", error);
+    
     res.sendStatus(403); // Forbidden
   }
 };
