@@ -20,7 +20,7 @@ router.get(
   '/view/:id',authMiddleware , 
   getAdoptionRequestById
 );
-router.put(
+router.patch(
   '/edit/:id', authMiddleware , 
   updateAdoptionRequest
 );

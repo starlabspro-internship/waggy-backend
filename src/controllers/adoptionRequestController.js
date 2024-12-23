@@ -1,12 +1,13 @@
 const { AdoptionRequest, User , Profile, Pet, AdoptionListing} = require('../models');
 const generateAcceptRequestEmail = require('../template/generateAcceptRequestEmail');
 const sendEmail = require("../services/emailService");
-
+const generateAcceptAdoptionRequestEmail = require('../template/generateAcceptAdoptionRequestEmail')
+const generateDeclineAdoptionRequestEmail = require('../template/generateDeclineAdoptionRequestEmail')
 
 exports.createAdoptionRequest = async (req, res) => {
   const {  listingID, id, requestStatus} = req.body;
   const requestUserID = req.userId
-  
+  console.log(listingID , requestStatus , requestUserID);
   try {
     const adoptionListing = await AdoptionListing.findByPk(listingID)
     if (!adoptionListing) {
@@ -64,13 +65,13 @@ exports.createAdoptionRequest = async (req, res) => {
             { 
               model: Pet, 
               as: 'pet', 
-              attributes: ['name', 'species', 'breed', 'age'], // Include pet details
+              attributes: ['id' ,'name', 'species', 'breed', 'age' ], // Include pet details
             },
           ],
         },
       ],
     });
-
+    console.log('new Adoption Request' , adoptionListing);
     const ownerEmail = adoptionRequestWithAssociations?.owner?.email || "email"
     const requestingUserEmail = adoptionRequestWithAssociations?.requestingUser?.email || "email"
     const ownerName = adoptionRequestWithAssociations?.owner?.profile?.firstName || "firstName"
@@ -136,7 +137,7 @@ exports.getAdoptionRequests = async (req, res) => {
             { 
               model: Pet, 
               as: 'pet', 
-              attributes: ['name', 'species', 'breed', 'age' , 'petPicture'], // Include pet details
+              attributes: ['id' , 'name', 'species', 'breed', 'age' , 'petPicture' , 'status'], // Include pet details
             },
           ],
         },
@@ -155,8 +156,42 @@ exports.getAdoptionRequestById = async (req, res) => {
     const adoptionRequest = await AdoptionRequest.findOne({
       where: { id },
       include: [
-        { model: User, as: 'owner' },
-        { model: AdoptionListing, as: 'listing' },
+        { 
+          model: User, 
+          as: 'owner', 
+          attributes: ['id', 'email'],
+          include: [
+            { 
+              model: Profile,
+              as: 'profile', 
+              attributes: ['firstName', 'lastName' , 'profilePicture' , 'address'], 
+            }, // Profile details for the owner
+          ],
+        },
+        { 
+          model: User, 
+          as: 'requestingUser', 
+          attributes: ['id', 'email'],
+          include: [
+            { 
+              model: Profile,
+              as: 'profile', 
+              attributes: ['firstName', 'lastName' , 'address'], 
+            }, // Profile details for the requesting user
+          ],
+        },
+        { 
+          model: AdoptionListing, 
+          as: 'listing', 
+          attributes: ['id', 'adoptionStatus', 'petID'],
+          include: [
+            { 
+              model: Pet, 
+              as: 'pet', 
+              attributes: ['id' ,'name', 'species', 'breed', 'age' , 'petPicture' , 'interests' , 'status'], // Include pet details
+            },
+          ],
+        },
       ],
     });
  
@@ -171,26 +206,90 @@ exports.getAdoptionRequestById = async (req, res) => {
 
 exports.updateAdoptionRequest = async (req, res) => {
   const { id } = req.params;
-  const { userID, listingID, requestStatus, requestUserID } = req.body;
-
+  const { requestStatus , listing , pet } = req.body;
+    
+    console.log( 'id' , id , requestStatus);
   try {
-    const adoptionRequest = await AdoptionRequest.findByPk(id);
+    const adoptionRequest = await AdoptionRequest.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          as: 'owner',
+          attributes: ['email'],
+          include: [{ model: Profile, as: 'profile', attributes: ['firstName'] }],
+        },
+        {
+          model: User,
+          as: 'requestingUser',
+          attributes: ['email'],
+          include: [{ model: Profile, as: 'profile', attributes: ['firstName'] }],
+        },
+        {
+          model: AdoptionListing,
+          as: 'listing',
+          attributes: ['id', 'adoptionStatus'],
+          include: [
+            { model: Pet, as: 'pet', attributes: [ 'id','name' , 'status'] }, // Include pet details
+          ],
+        },
+      ],
+    });
+    console.log('adoption request' ,adoptionRequest);
     if (!adoptionRequest) {
-      return res.status(404).json({ message: 'Adoption request not found.' });
+      return res.status(404).json({ message: 'Adoption request not found' });
     }
 
-    // Update the adoption request
-    adoptionRequest.userID = userID || adoptionRequest.userID;
-    adoptionRequest.listingID = listingID || adoptionRequest.listingID;
-    adoptionRequest.requestStatus =
-      requestStatus || adoptionRequest.requestStatus;
-    adoptionRequest.requestUserID =
-      requestUserID || adoptionRequest.requestUserID;
+    if (pet && pet.status) {
+      const petToUpdate = await Pet.findByPk(adoptionRequest.listing.pet.id);
+      if (petToUpdate) {
+        petToUpdate.status = pet.status; // Set pet status (adopted or available)
+        await petToUpdate.save();
+        console.log('Pet status updated:', petToUpdate.status);
+      } else {
+        console.error('Pet not found');
+      }
+    }
 
+    if (listing && listing.adoptionStatus) {
+      const listingToUpdate = await AdoptionListing.findByPk(adoptionRequest.listingID);
+      console.log('listing to update' , listingToUpdate.adoptionStatus);
+      if (listingToUpdate) {
+        listingToUpdate.adoptionStatus = listing.adoptionStatus;
+        console.log(listingToUpdate.adoptionListing , listing.adoptionListing);
+        await listingToUpdate.save();
+      }
+    }
+    adoptionRequest.requestStatus = requestStatus; // Update the request status
     await adoptionRequest.save();
-    res.json(adoptionRequest);
+
+
+    const ownerEmail = adoptionRequest?.owner?.email || "email"
+    const requestingUserEmail = adoptionRequest?.requestingUser?.email || "email"
+    const ownerName = adoptionRequest?.owner?.profile?.firstName || "firstName"
+    const requesterName = adoptionRequest?.requestingUser?.profile?.firstName || "firstName"
+    const petDetails = adoptionRequest?.listing?.pet?.name || "Pet"
+    console.log(ownerEmail , requestingUserEmail , ownerName , requesterName , petDetails);
+    if (requestStatus === 'accepted' && ownerEmail) {
+      const emailContent = generateAcceptAdoptionRequestEmail(
+        ownerName,
+        requesterName,
+        petDetails
+      );
+      await sendEmail(requestingUserEmail, 'Adoption Request Accepted', emailContent);
+    } else if (requestStatus === 'rejected' && ownerEmail) {
+      const emailContent = generateDeclineAdoptionRequestEmail(
+        ownerName,
+        requesterName,
+        petDetails
+      );
+      await sendEmail(requestingUserEmail, 'Adoption Request Rejected', emailContent);
+    }
+    
+    res.status(200).json({ message: `Request ${requestStatus}`, adoptionRequest });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred', error });
   }
 };
 

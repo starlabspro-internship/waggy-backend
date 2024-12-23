@@ -35,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
     breed: {
       type: DataTypes.STRING,
     },
+    status: {
+      type: DataTypes.ENUM('available', 'adopted', 'pending'),
+      defaultValue: 'available',
+      allowNull: false,
+    },
   }, {
     tableName: 'Pets',
     timestamps: true,

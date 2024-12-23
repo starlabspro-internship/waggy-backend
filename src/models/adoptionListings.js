@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     adoptionStatus: {
-      type: DataTypes.ENUM("Available", "Unavailable", "Pending"),
+      type: DataTypes.ENUM("Available", "Unavailable", "Pending" , 'Adopted'),
       defaultValue: "Available",
     },
     listedAt: {

@@ -45,6 +45,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      status: {
+        type: Sequelize.ENUM('available', 'adopted', 'pending'),
+        defaultValue: 'available',
+        allowNull: false,
+      },
       userId: {  // Ensure this matches the model's association name
         type: Sequelize.INTEGER,
         allowNull: false,
