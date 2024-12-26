@@ -1,14 +1,16 @@
 const { Server } = require('socket.io');
-const messageController = require('./controllers/messagesControllerr'); 
+const messageController = require('./controllers/messagesController');
 
-module.exports = (server) => {
+function initializeWebSocket(server) {
   // Initialize WebSocket server
   const io = new Server(server, {
     cors: {
-      origin: '*', // Allow all origins (adjust as necessary for security)
+      origin: '*', // Adjust this to your frontend origin if needed
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['Content-Type'],
     },
   });
-
+ 
   io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
 
@@ -45,7 +47,9 @@ module.exports = (server) => {
         socket.emit('error', { message: 'Failed to send message' });
       }
     });
-
+    socket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
     // Handle disconnection
     socket.on('disconnect', () => {
       console.log(`User disconnected: ${socket.id}`);
@@ -53,4 +57,6 @@ module.exports = (server) => {
   });
 
   return io; // Return the WebSocket server instance (optional, for advanced use cases)
-};
+}
+
+module.exports = initializeWebSocket;

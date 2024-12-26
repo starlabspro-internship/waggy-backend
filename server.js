@@ -3,11 +3,11 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path')
 const authenticate = require('./src/middleware/auth'); // Import the middleware here
-const http = require('http');
-const { Server } = require('socket.io')
+
+
 const app = express();
-const server = http.createServer(app); // Use http.createServer
-const io = new Server(server); // Initialize Socket.IO
+ // Use http.createServer
+ // Initialize Socket.IO
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -62,24 +62,42 @@ passwordRoutes(app);
 matchingListingRoutes(app);
 matchRequestRoutes(app);
 
-io.on('connection', (socket) => {
-  console.log(`A user connected: ${socket.id}`);
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ port: 8080 });
 
-  // Listen for custom events, e.g., 'message'
-  socket.on('message', (data) => {
-    console.log(`Message received: ${data}`);
-    // Broadcast the message to all connected clients
-    io.emit('message', data);
-  });
+const clients = new Map();
 
-  // Handle disconnection
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
-  });
+wss.on('connection', (ws, req) => {
+    const userId = req.url.split('/').pop(); // Extract userId from 
+    console.log(req.url);
+    console.log(`myUser connected: ${userId}`);
+    clients.set(userId, ws);
+
+    ws.on('message', (data) => {
+        const message = JSON.parse(data);
+        console.log(message);
+        const recipientWs = clients.get(message.receiverUserID);
+       
+        
+
+        if (recipientWs) {
+            recipientWs.send(JSON.stringify(message)); // Send message to recipient
+        } else {
+            console.log(`Recipient not connected: ${message.receiverUserID}`);
+        }
+    });
+
+    ws.on('close', () => {
+        console.log(`User disconnected: ${userId}`);
+        clients.delete(userId);
+    });
 });
 
-const port = process.env.PORT || 3000;
 
+
+
+
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running on port: ${port}!`);
 });
